@@ -1,0 +1,3178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjEyIiBmaWxsPSIjMWUyMDMwIi8+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMjYiIHI9IjEzIiBmaWxsPSJub25lIiBzdHJva2U9IiM0YTkwZTIiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIzMiIgY3k9IjI2IiByPSI2IiBmaWxsPSIjNGE5MGUyIi8+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMjYiIHI9IjIuNSIgZmlsbD0iIzFlMjAzMCIvPgo8dGV4dCB4PSIzMiIgeT0iNTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM3YzVjZmEiIGZvbnQtc2l6ZT0iMTAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIj5ORU88L3RleHQ+Cjwvc3ZnPg==">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>IRIS NEO</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#1e2030;--bg2:#252838;--bg3:#2e3248;--card:#2a2d42;
+  --border:rgba(255,255,255,0.07);--text:#ffffff;--text2:#a0a3b8;--text3:#6b6e85;
+  --blue:#4a90e2;--red:#ff3b30;--green:#34c759;--orange:#ff9f0a;
+}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;height:100%;overflow:hidden;}
+.app{height:100dvh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;overflow:hidden;}
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:8px;}
+.scroll-area::-webkit-scrollbar{display:none;}
+
+/* ── TOP BAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:52px 20px 16px;flex-shrink:0;}
+.greeting{font-size:30px;font-weight:300;color:var(--text);letter-spacing:-0.5px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.incog-indicator{display:none;align-items:center;gap:4px;background:rgba(124,92,250,0.2);border:1px solid rgba(124,92,250,0.4);border-radius:12px;padding:4px 10px;font-size:11px;color:#a78bfa;font-weight:500;}
+.incog-indicator.on{display:flex;}
+.menu-btn{position:relative;background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;}
+.menu-btn span{display:block;width:22px;height:2px;background:var(--text);border-radius:1px;}
+.red-dot{position:absolute;top:0;right:0;width:8px;height:8px;background:var(--red);border-radius:50%;}
+
+/* ── SEARCH BAR ── */
+.search-wrap{padding:0 16px 18px;width:100%;box-sizing:border-box;}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--bg3);border-radius:24px;padding:11px 14px;cursor:pointer;transition:background .15s;width:100%;min-width:0;overflow:hidden;}
+.search-bar:active{background:var(--card);}
+.engine-btn{display:flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;}
+.engine-logo{width:24px;height:24px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.engine-arrow{color:var(--text2);font-size:10px;}
+.search-placeholder{flex:1;font-size:15px;color:var(--text2);font-weight:400;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.tabs-icon{width:28px;height:28px;border:1.5px solid var(--text2);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;}
+.tabs-icon:active{background:rgba(255,255,255,.1);}
+
+/* ── QUICK ACCESS ── */
+.quick-wrap{padding:0 16px 16px;}
+.quick-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px 8px;}
+.qa-item{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;}
+.qa-icon{width:52px;height:52px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .15s;overflow:hidden;position:relative;}
+.qa-icon img{width:32px;height:32px;border-radius:8px;object-fit:cover;}
+.qa-item:active .qa-icon{transform:scale(0.92);}
+.qa-label{font-size:11px;color:var(--text2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;}
+
+/* Custom app remove badge */
+.qa-remove{position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:var(--red);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:9px;color:white;font-weight:700;z-index:5;}
+.edit-mode .qa-remove{display:flex;}
+.edit-mode .qa-item{animation:wiggle 0.3s ease infinite alternate;}
+@keyframes wiggle{0%{transform:rotate(-2deg);}100%{transform:rotate(2deg);}}
+
+/* ── DOWNLOAD HUB ── */
+.hub-wrap{margin:0 16px 16px;background:var(--card);border-radius:16px;padding:14px 16px;}
+.hub-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.hub-title{font-size:15px;font-weight:600;color:var(--text);}
+.hub-close{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;line-height:1;}
+.hub-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.hub-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
+.hub-icon{width:46px;height:46px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .15s;overflow:hidden;}
+.hub-icon img{width:28px;height:28px;border-radius:6px;object-fit:cover;}
+.hub-item:active .hub-icon{transform:scale(0.92);}
+.hub-label{font-size:11px;color:var(--text2);text-align:center;}
+
+/* ── NEWS TABS ── */
+.news-tabs-wrap{border-bottom:1px solid var(--border);}
+.news-tabs{display:flex;overflow-x:auto;padding:0 16px;gap:4px;}
+.news-tabs::-webkit-scrollbar{display:none;}
+.ntab{background:none;border:none;color:var(--text2);font-family:'Inter',sans-serif;font-size:15px;font-weight:500;padding:10px 12px;cursor:pointer;white-space:nowrap;position:relative;transition:color .15s;flex-shrink:0;}
+.ntab.active{color:var(--blue);}
+.ntab.active::after{content:'';position:absolute;bottom:0;left:12px;right:12px;height:2.5px;background:var(--blue);border-radius:2px 2px 0 0;}
+
+/* ── NEWS FEED ── */
+.news-feed{display:flex;flex-direction:column;}
+.news-item{padding:16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.news-item:active{background:rgba(255,255,255,0.03);}
+.news-item-inner{display:flex;gap:12px;align-items:flex-start;}
+.news-body{flex:1;min-width:0;}
+.news-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.news-source{font-size:12px;font-weight:500;color:var(--text2);}
+.news-time{font-size:12px;color:var(--text3);}
+.news-title{font-size:15px;font-weight:600;color:var(--text);line-height:1.45;}
+.news-img{width:80px;height:64px;border-radius:8px;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;}
+.news-img img{width:100%;height:100%;object-fit:cover;}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{display:flex;align-items:center;background:var(--bg2);border-top:1px solid var(--border);padding:8px 0 18px;flex-shrink:0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:6px 0;transition:opacity .15s;position:relative;}
+.nav-item:active{opacity:0.6;}
+.nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.nav-icon svg{width:20px;height:20px;stroke:var(--text2);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.nav-item.active .nav-icon svg{stroke:var(--text);}
+.nav-label{font-size:9px;color:var(--text3);margin-top:3px;font-weight:500;letter-spacing:0.3px;}
+.nav-item.active .nav-label{color:var(--text2);}
+.tab-badge{min-width:22px;height:22px;border:1.6px solid var(--text2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text2);padding:0 3px;}
+.nav-item.active .tab-badge{border-color:var(--text);color:var(--text);}
+
+/* ════════════════════════════════════
+   ENGINE PICKER
+════════════════════════════════════ */
+.engine-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:80;align-items:flex-start;justify-content:center;padding-top:56px;backdrop-filter:blur(2px);}
+.engine-overlay.open{display:flex;}
+.engine-picker{background:#2c3050;border-radius:20px;padding:20px 16px 24px;width:calc(100% - 24px);max-width:420px;animation:epIn .2s ease forwards;max-height:80vh;overflow-y:auto;}
+@keyframes epIn{from{opacity:0;transform:translateY(-10px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.ep-title{font-size:13px;font-weight:600;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;text-align:center;}
+.ep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 8px;}
+.ep-item{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;padding:10px 6px;border-radius:14px;transition:background .15s,border-color .15s;position:relative;border:1.5px solid transparent;}
+.ep-item:hover{background:rgba(255,255,255,.06);}
+.ep-item:active{background:rgba(255,255,255,.1);transform:scale(.95);}
+.ep-item.selected{background:rgba(74,144,226,.1);border-color:rgba(74,144,226,.4);}
+.ep-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;position:relative;overflow:visible;background:rgba(255,255,255,.05);}
+.ep-check{position:absolute;bottom:0;right:0;width:18px;height:18px;background:#34c759;border-radius:50%;border:2px solid #2c3050;display:none;align-items:center;justify-content:center;font-size:9px;color:white;font-weight:700;}
+.ep-item.selected .ep-check{display:flex;}
+.ep-item.selected .ep-icon{box-shadow:0 0 0 2px rgba(74,144,226,.5);}
+.ep-name{font-size:11px;color:var(--text2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;font-weight:500;}
+.ep-warn{position:absolute;top:4px;right:4px;width:16px;height:16px;background:#ff9f0a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;font-weight:700;}
+.ep-item.selected .ep-name{color:var(--blue);}
+
+/* ════════════════════════════════════
+   SEARCH OVERLAY
+════════════════════════════════════ */
+.search-overlay{display:none;position:fixed;inset:0;background:#111318;z-index:50;flex-direction:column;}
+.search-overlay.open{display:flex;}
+.so-top{display:flex;align-items:center;gap:10px;padding:48px 12px 12px;border-bottom:1px solid rgba(255,255,255,.08);width:100%;box-sizing:border-box;}
+.so-back{background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:6px;flex-shrink:0;line-height:1;}
+.so-bar{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg3);border-radius:22px;padding:10px 14px;border:1.5px solid transparent;transition:border-color .2s;min-width:0;overflow:hidden;}
+.so-bar:focus-within{border-color:rgba(74,144,226,.5);}
+.so-engine-btn{display:flex;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;}
+.so-engine-logo{width:22px;height:22px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.so-arrow{color:var(--text3);font-size:9px;}
+.so-divider{width:1px;height:16px;background:rgba(255,255,255,.1);flex-shrink:0;}
+#so-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;caret-color:var(--blue);min-width:0;width:100%;}
+#so-input::placeholder{color:var(--text3);}
+.so-mic-btn{width:32px;height:32px;background:none;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.so-mic-btn:hover{background:rgba(255,255,255,.08);}
+.so-mic-btn svg{width:18px;height:18px;stroke:var(--text2);fill:none;stroke-width:1.8;stroke-linecap:round;}
+.so-mic-btn.recording svg{stroke:var(--red);}
+.so-mic-btn.recording{animation:micPulse .8s ease-in-out infinite alternate;}
+@keyframes micPulse{0%{background:rgba(255,59,48,.1);}100%{background:rgba(255,59,48,.25);}}
+.so-go-btn{width:36px;height:36px;background:var(--blue);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s,transform .1s;}
+.so-go-btn:active{transform:scale(.93);background:#3a7bd5;}
+.so-go-btn svg{width:16px;height:16px;fill:white;}
+.so-body{flex:1;overflow-y:auto;padding:0;}
+.so-body::-webkit-scrollbar{display:none;}
+.so-section{padding:14px 16px 0;}
+.so-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.so-section-title{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--text);}
+.so-clear-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;}
+.recent-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+.chip{background:var(--bg3);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--text2);cursor:pointer;transition:background .15s;}
+.chip:hover{background:var(--card);color:var(--text);}
+.trend-list{display:flex;flex-direction:column;}
+.trend-row{display:flex;align-items:center;gap:12px;padding:13px 0;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;}
+.trend-row:last-child{border-bottom:none;}
+.trend-row:active{background:rgba(255,255,255,.03);}
+.trend-badge{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
+.tb-1{background:#e8472b;}.tb-2{background:#f5a623;}.tb-3{background:#f5a623;}.tb-n{background:none;color:var(--blue);font-weight:600;}
+.trend-q{flex:1;font-size:15px;color:var(--text);font-weight:400;}
+.trend-vol{font-size:13px;color:var(--text3);flex-shrink:0;}
+.trend-chevron{color:var(--text3);font-size:14px;flex-shrink:0;}
+.private-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--text2);cursor:pointer;margin:12px 16px 0;width:fit-content;}
+
+/* ════════════════════════════════════
+   VOICE SHEET
+════════════════════════════════════ */
+.v-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);}
+.v-overlay.open{display:flex;}
+.v-sheet{background:#1c1f2e;border-radius:24px 24px 0 0;padding:20px 24px 44px;width:100%;max-width:480px;text-align:center;animation:sup .25s ease forwards;}
+@keyframes sup{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.vhandle{width:32px;height:4px;background:var(--bg3);border-radius:2px;margin:0 auto 22px;}
+.v-rings{width:90px;height:90px;margin:0 auto 18px;position:relative;display:flex;align-items:center;justify-content:center;}
+.vr{position:absolute;border-radius:50%;border:1.5px solid rgba(74,144,226,.4);animation:vring 2s ease-out infinite;}
+.vr:nth-child(1){width:90px;height:90px;}.vr:nth-child(2){width:66px;height:66px;animation-delay:.5s;}.vr:nth-child(3){width:44px;height:44px;animation-delay:1s;}
+@keyframes vring{0%{transform:scale(.5);opacity:.7;}100%{transform:scale(1.2);opacity:0;}}
+.v-core{width:50px;height:50px;background:#4a90e2;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;box-shadow:0 4px 20px rgba(74,144,226,.4);}
+.v-core svg{width:22px;height:22px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;}
+.v-status{font-size:15px;color:var(--text2);margin-bottom:10px;font-weight:400;}
+.v-transcript{background:var(--bg3);border-radius:12px;padding:12px 16px;font-size:15px;color:var(--text);min-height:48px;margin-bottom:22px;line-height:1.55;}
+.v-cancel{background:var(--bg3);border:none;color:var(--text2);font-family:'Inter',sans-serif;font-size:15px;padding:12px 32px;border-radius:12px;cursor:pointer;}
+
+/* ════════════════════════════════════
+   RIGHT SLIDE MENU
+════════════════════════════════════ */
+.menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90;display:none;}
+.menu-backdrop.open{display:block;}
+.side-menu{position:fixed;top:0;right:0;bottom:0;width:min(300px,80vw);background:#1c1f2e;z-index:91;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding-bottom:20px;}
+.side-menu.open{transform:translateX(0);}
+.menu-logo-row{padding:52px 20px 20px;border-bottom:1px solid var(--border);}
+.menu-logo{font-size:22px;font-weight:700;color:var(--blue);letter-spacing:1px;}
+.menu-sub{font-size:12px;color:var(--text3);margin-top:3px;}
+.menu-row{display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;transition:background .15s;}
+.menu-row:active{background:rgba(255,255,255,.06);}
+.menu-row:hover{background:rgba(255,255,255,.04);}
+.menu-icon{width:38px;height:38px;border-radius:12px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.menu-text{font-size:15px;color:var(--text);font-weight:400;}
+.menu-text small{display:block;font-size:11px;color:var(--text3);font-weight:400;margin-top:1px;}
+.menu-divider{height:1px;background:var(--border);margin:6px 0;}
+.menu-footer{padding:14px 20px;font-size:12px;color:var(--text3);line-height:1.6;}
+
+/* ════════════════════════════════════
+   BOTTOM SHEETS (shared)
+════════════════════════════════════ */
+.sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;display:none;backdrop-filter:blur(3px);}
+.sheet-backdrop.open{display:block;}
+.bottom-sheet{position:fixed;left:0;right:0;top:0;bottom:0;max-width:480px;margin:0 auto;background:#1c1f2e;border-radius:0;z-index:101;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);height:100dvh;display:flex;flex-direction:column;}
+.bottom-sheet.open{transform:translateY(0);}
+.sheet-handle{width:36px;height:4px;background:var(--bg3);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.sheet-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sheet-title{font-size:16px;font-weight:600;color:var(--text);}
+.sheet-close{background:var(--bg3);border:none;color:var(--text2);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;}
+.sheet-body{overflow-y:auto;flex:1;padding:12px 16px 24px;}
+.sheet-body::-webkit-scrollbar{display:none;}
+
+/* bookmark / history / dl items */
+.list-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.list-item:last-child{border-bottom:none;}
+.list-item:active{opacity:.7;}
+.li-icon{width:38px;height:38px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;font-size:16px;}
+.li-icon img{width:26px;height:26px;border-radius:6px;object-fit:cover;}
+.li-info{flex:1;min-width:0;}
+.li-title{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-sub{font-size:12px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-del{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:14px;border-radius:50%;flex-shrink:0;}
+.li-del:hover{background:rgba(255,59,48,.1);color:var(--red);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
+.empty-state .em-icon{font-size:40px;margin-bottom:12px;}
+.empty-state p{font-size:14px;line-height:1.6;}
+.sheet-action-row{display:flex;gap:8px;margin-bottom:14px;}
+.sheet-btn{flex:1;padding:9px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;transition:background .15s;font-weight:500;}
+.sheet-btn:hover{background:var(--card);color:var(--text);}
+.sheet-btn.primary{background:var(--blue);border-color:var(--blue);color:white;}
+.sheet-btn.primary:hover{background:#3a7bd5;}
+
+/* ── TABS SHEET ── */
+.tab-card{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:background .15s;border:1.5px solid transparent;}
+.tab-card:hover{border-color:rgba(74,144,226,.3);}
+.tab-card.active-tab{border-color:var(--blue);background:rgba(74,144,226,.1);}
+.tab-fav{width:28px;height:28px;border-radius:7px;background:var(--bg2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.tab-fav img{width:20px;height:20px;border-radius:4px;}
+.tab-info{flex:1;min-width:0;}
+.tab-title{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tab-url{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.tab-close-btn{width:22px;height:22px;background:none;border:none;color:var(--text3);cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.tab-close-btn:hover{background:rgba(255,59,48,.1);color:var(--red);}
+.new-tab-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:12px;background:var(--bg3);border:1.5px dashed var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;width:100%;margin-top:4px;}
+.new-tab-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* ── GAMES SHEET ── */
+.game-cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;}
+.game-cats::-webkit-scrollbar{display:none;}
+.game-pill{padding:6px 14px;border-radius:50px;background:var(--bg3);border:1px solid var(--border);font-size:13px;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.game-pill.active{background:rgba(74,144,226,.15);border-color:rgba(74,144,226,.4);color:var(--blue);}
+.games-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.game-card{background:var(--bg3);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .15s;border:1px solid var(--border);}
+.game-card:active{transform:scale(.95);}
+.game-thumb{height:78px;background:linear-gradient(135deg,var(--bg2),#1e2030);display:flex;align-items:center;justify-content:center;font-size:2.2rem;position:relative;}
+.game-thumb img{width:100%;height:100%;object-fit:cover;}
+.game-play-badge{position:absolute;bottom:6px;right:6px;width:26px;height:26px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.game-meta{padding:8px 10px;}
+.game-name{font-size:13px;font-weight:600;color:var(--text);}
+.game-genre{font-size:11px;color:var(--text3);margin-top:2px;}
+.game-sites-title{font-size:13px;font-weight:600;color:var(--text2);margin:14px 0 8px;text-transform:uppercase;letter-spacing:.5px;}
+.game-sites-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.game-site-item{background:var(--bg3);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:background .15s;border:1px solid var(--border);}
+.game-site-item:active{transform:scale(.95);}
+.game-site-item img{width:34px;height:34px;border-radius:8px;}
+.game-site-item span{font-size:11px;color:var(--text2);text-align:center;}
+
+/* ── SETTINGS SHEET ── */
+.settings-section{margin-bottom:20px;}
+.settings-section-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding:0 4px;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:var(--bg3);border-radius:12px;margin-bottom:6px;cursor:pointer;transition:background .15s;}
+.settings-row:last-child{margin-bottom:0;}
+.settings-row:active{background:var(--card);}
+.sr-left{display:flex;align-items:center;gap:12px;}
+.sr-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.sr-text{font-size:14px;color:var(--text);font-weight:400;}
+.sr-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.sr-right{font-size:13px;color:var(--text3);}
+/* toggle */
+.toggle{width:44px;height:26px;border-radius:13px;background:var(--bg2);border:1.5px solid var(--border);position:relative;cursor:pointer;transition:background .2s;}
+.toggle.on{background:var(--green);border-color:var(--green);}
+.toggle-knob{width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.toggle.on .toggle-knob{transform:translateX(18px);}
+
+/* ── SAVE APP DIALOG ── */
+.dialog-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.dialog-overlay.open{display:flex;}
+.dialog-box{background:#1c1f2e;border-radius:20px;padding:22px 20px;width:calc(100% - 40px);max-width:360px;animation:dlIn .2s ease;}
+@keyframes dlIn{from{opacity:0;transform:scale(.93);}to{opacity:1;transform:scale(1);}}
+.dialog-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.dialog-sub{font-size:13px;color:var(--text3);margin-bottom:18px;}
+.dialog-field{margin-bottom:12px;}
+.dialog-label{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px;}
+.dialog-input{width:100%;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .15s;}
+.dialog-input:focus{border-color:rgba(74,144,226,.5);}
+.dialog-btns{display:flex;gap:10px;margin-top:18px;}
+.btn-cancel{flex:1;padding:11px;border-radius:12px;background:var(--bg3);border:none;color:var(--text2);font-family:'Inter',sans-serif;font-size:15px;cursor:pointer;}
+.btn-ok{flex:1;padding:11px;border-radius:12px;background:var(--blue);border:none;color:white;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;}
+.btn-ok:active{background:#3a7bd5;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:#2c3050;border:1px solid rgba(74,144,226,.3);border-radius:50px;padding:9px 20px;font-size:13px;color:var(--text);font-weight:500;z-index:300;opacity:0;transition:all .25s ease;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── MORE APPS PANEL ── */
+#more-cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;}
+#more-cats::-webkit-scrollbar{display:none;}
+.more-cat-pill{padding:6px 14px;border-radius:50px;background:var(--bg3);border:1px solid var(--border);font-size:13px;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.more-cat-pill.active{background:rgba(74,144,226,.15);border-color:rgba(74,144,226,.4);color:var(--blue);}
+.more-apps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px;}
+.more-app-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
+.more-app-icon{width:56px;height:56px;border-radius:14px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .15s;}
+.more-app-icon img{width:38px;height:38px;border-radius:8px;object-fit:cover;}
+.more-app-item:active .more-app-icon{transform:scale(.9);}
+.more-app-label{font-size:11px;color:var(--text2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;}
+
+
+/* ── ADGUARD DNS SHIELD ── */
+.dns-badge{display:none;align-items:center;gap:4px;background:rgba(0,188,120,0.15);border:1px solid rgba(0,188,120,0.4);border-radius:12px;padding:3px 9px;font-size:11px;color:#00bc78;font-weight:600;flex-shrink:0;}
+.dns-badge.on{display:flex;}
+.dns-badge svg{width:11px;height:11px;fill:#00bc78;}
+
+
+
+/* ════════════════════════════════════
+   IN-APP BROWSER
+════════════════════════════════════ */
+.iab-wrap{
+  display:none;position:fixed;inset:0;z-index:999;
+  flex-direction:column;background:#1e2030;
+  max-width:480px;margin:0 auto;
+  position:fixed;
+}
+.iab-wrap.open{ display:flex; }
+
+.iab-topbar{
+  display:flex;align-items:center;gap:6px;
+  padding:46px 12px 10px;
+  background:#2a2b30;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  flex-shrink:0;
+}
+/* Search icon on left */
+.iab-search-icon{
+  flex-shrink:0;width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;opacity:0.7;
+}
+.iab-search-icon svg{ width:18px;height:18px;stroke:#a0a3b8;fill:none;stroke-width:2;stroke-linecap:round; }
+/* URL box — rounded pill like Hola */
+.iab-urlbox{
+  flex:1;background:#3a3b41;border-radius:22px;
+  padding:8px 14px;display:flex;align-items:center;gap:8px;
+  overflow:hidden;min-width:0;cursor:pointer;
+  border:1px solid rgba(255,255,255,.06);
+}
+.iab-urlbox:focus-within{
+  border-color:rgba(74,144,226,.5);
+  background:#3e3f47;
+}
+.iab-lock{ font-size:13px;flex-shrink:0;line-height:1; }
+.iab-url-input{
+  font-size:13px;color:#e8eaed;background:none;border:none;
+  outline:none;flex:1;min-width:0;
+  font-family:'Inter',sans-serif;
+  text-overflow:ellipsis;
+  caret-color:#4a90e2;
+}
+.iab-url-input::placeholder{color:#6b6e85;}
+.iab-url-input:focus{color:#fff;}
+/* Right action buttons */
+.iab-actions{ display:flex;align-items:center;gap:1px;flex-shrink:0; }
+.iab-act-btn{
+  background:none;border:none;color:#a0a3b8;
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+  transition:background .12s;
+}
+.iab-act-btn:active{ background:rgba(255,255,255,.12); }
+.iab-act-btn svg{ width:18px;height:18px;stroke:#c0c4d0;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
+/* Shield icon — green like Hola */
+.iab-shield-btn svg{ stroke:#34c759; }
+/* Close btn — X on left */
+.iab-close-btn{
+  background:none;border:none;
+  color:#a0a3b8;width:32px;height:32px;border-radius:50%;
+  font-size:18px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .12s;
+}
+.iab-close-btn:active{ background:rgba(255,255,255,.1); }
+
+/* progress bar */
+.iab-progress{
+  height:2px;background:linear-gradient(90deg,#4a90e2,#7c5cfa);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s ease;flex-shrink:0;
+}
+.iab-progress.loading{ transform:scaleX(0.7); }
+.iab-progress.done{ transform:scaleX(1);transition:transform .15s; }
+
+/* iframe */
+.iab-frame{
+  flex:1;border:none;width:100%;
+  background:#fff;
+}
+
+/* blocked screen */
+.iab-blocked{
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;gap:16px;padding:40px 24px;
+  text-align:center;flex:1;
+}
+.iab-blocked.show{ display:flex; }
+.iab-blocked-icon{ font-size:52px; }
+.iab-blocked-title{ font-size:18px;font-weight:700;color:#fff; }
+.iab-blocked-msg{ font-size:14px;color:#a0a3b8;line-height:1.6;max-width:280px; }
+.iab-blocked-url{ font-size:12px;color:#6b6e85;font-family:monospace;
+  background:rgba(255,255,255,.05);padding:6px 14px;border-radius:8px;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.iab-open-ext-btn{
+  background:#4a90e2;border:none;color:#fff;
+  padding:12px 28px;border-radius:14px;font-size:15px;
+  font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+}
+.iab-open-ext-btn:active{ background:#3a7bd5; }
+
+/* ════════════════════════════════════
+   IAB CONTEXT MENU (3-dot menu)
+════════════════════════════════════ */
+.iab-menu-backdrop{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.65);z-index:300;
+  backdrop-filter:blur(3px);
+}
+.iab-menu-backdrop.open{ display:block; }
+.iab-menu-sheet{
+  position:fixed;left:0;right:0;bottom:0;
+  max-width:480px;margin:0 auto;
+  background:#1c1f2e;border-radius:24px 24px 0 0;
+  z-index:301;
+  transform:translateY(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  padding-bottom:32px;
+  max-height:88vh;overflow-y:auto;
+}
+.iab-menu-sheet::-webkit-scrollbar{ display:none; }
+.iab-menu-sheet.open{ transform:translateY(0); }
+.iab-ms-handle{
+  width:36px;height:4px;background:#2e3248;
+  border-radius:2px;margin:12px auto 8px;
+}
+.iab-ms-sitebox{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 18px 14px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.iab-ms-favicon{
+  width:32px;height:32px;border-radius:8px;
+  background:#2e3248;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.iab-ms-favicon img{ width:24px;height:24px;border-radius:4px; }
+.iab-ms-url{
+  flex:1;font-size:13px;color:#a0a3b8;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* Quick-action row (icons) */
+.iab-ms-quick{
+  display:flex;justify-content:space-around;
+  padding:14px 8px 12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.iab-ms-qbtn{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  cursor:pointer;flex:1;
+}
+.iab-ms-qbtn:active .iab-ms-qicon{ transform:scale(.88); }
+.iab-ms-qicon{
+  width:44px;height:44px;background:#2e3248;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:transform .12s;
+}
+.iab-ms-qicon.active-icon{ background:rgba(74,144,226,.2); }
+.iab-ms-qicon svg{
+  width:20px;height:20px;stroke:#c0c4d0;fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+.iab-ms-qlabel{ font-size:10px;color:#6b6e85;font-weight:500;text-align:center; }
+/* List rows */
+.iab-ms-row{
+  display:flex;align-items:center;gap:14px;
+  padding:13px 18px;cursor:pointer;
+  transition:background .12s;
+}
+.iab-ms-row:active{ background:rgba(255,255,255,.05); }
+.iab-ms-row-icon{
+  width:36px;height:36px;background:#252838;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  flex-shrink:0;
+}
+.iab-ms-row-icon svg{
+  width:18px;height:18px;stroke:#a0a3b8;fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+.iab-ms-row-text{
+  flex:1;
+}
+.iab-ms-row-label{ font-size:14px;color:#e8eaed;font-weight:400; }
+.iab-ms-row-sub{ font-size:11px;color:#6b6e85;margin-top:1px; }
+.iab-ms-row-badge{
+  font-size:11px;color:#4a90e2;font-weight:600;
+  background:rgba(74,144,226,.12);
+  padding:2px 8px;border-radius:8px;
+}
+.iab-ms-toggle{
+  width:38px;height:22px;background:#3a3b41;border-radius:11px;
+  position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;
+}
+.iab-ms-toggle.on{ background:#34c759; }
+.iab-ms-toggle::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:18px;height:18px;background:white;border-radius:50%;
+  transition:left .2s;
+}
+.iab-ms-toggle.on::after{ left:18px; }
+.iab-ms-divider{ height:1px;background:rgba(255,255,255,.05);margin:4px 0; }
+
+/* Find-on-page bar */
+.iab-find-bar{
+  display:none;
+  align-items:center;gap:8px;
+  background:#2a2b30;
+  padding:8px 12px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+.iab-find-bar.open{ display:flex; }
+.iab-find-input{
+  flex:1;background:#3a3b41;border:none;outline:none;
+  color:#fff;font-family:'Inter',sans-serif;font-size:14px;
+  padding:8px 12px;border-radius:10px;
+}
+.iab-find-count{ font-size:12px;color:#6b6e85;white-space:nowrap; }
+.iab-find-close{
+  background:none;border:none;color:#a0a3b8;
+  font-size:18px;cursor:pointer;padding:4px;
+}
+
+/* ════════════════════════════════════
+   ADGUARD DNS SETUP PANEL
+════════════════════════════════════ */
+.dns-panel-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
+  align-items:flex-end;justify-content:center;
+}
+.dns-panel-overlay.open{ display:flex; }
+.dns-panel{
+  background:#1c1f2e;border-radius:24px 24px 0 0;
+  width:100%;max-width:480px;
+  padding:0 0 40px;
+  animation:sup .25s ease forwards;
+  max-height:92vh;overflow-y:auto;
+}
+.dns-panel::-webkit-scrollbar{ display:none; }
+.dns-panel-handle{
+  width:36px;height:4px;background:#2e3248;
+  border-radius:2px;margin:12px auto 0;
+}
+.dns-panel-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.dns-panel-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:17px;font-weight:700;color:#fff;
+}
+.dns-panel-title-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(0,188,120,.15);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.dns-close-btn{
+  background:rgba(255,255,255,.08);border:none;color:#a0a3b8;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;cursor:pointer;
+}
+.dns-body{ padding:16px 20px; }
+.dns-status-card{
+  background:rgba(0,188,120,.08);border:1px solid rgba(0,188,120,.25);
+  border-radius:14px;padding:14px 16px;margin-bottom:16px;
+  display:flex;align-items:center;gap:12px;
+}
+.dns-status-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#00bc78;flex-shrink:0;
+  box-shadow:0 0 8px #00bc78;
+}
+.dns-status-dot.off{ background:#6b6e85;box-shadow:none; }
+.dns-status-text{ font-size:14px;color:#fff;font-weight:500; }
+.dns-status-sub{ font-size:12px;color:#a0a3b8;margin-top:2px; }
+
+.dns-section-title{
+  font-size:12px;font-weight:600;color:#6b6e85;
+  text-transform:uppercase;letter-spacing:.7px;
+  margin:16px 0 8px;
+}
+.dns-addr-card{
+  background:#252838;border-radius:12px;padding:12px 14px;
+  margin-bottom:8px;display:flex;align-items:center;
+  justify-content:space-between;gap:10px;
+}
+.dns-addr-info{ flex:1;min-width:0; }
+.dns-addr-label{ font-size:11px;color:#6b6e85;margin-bottom:3px; }
+.dns-addr-value{
+  font-size:16px;font-weight:600;color:#fff;
+  font-family:monospace;letter-spacing:1px;
+}
+.dns-copy-btn{
+  background:rgba(74,144,226,.15);border:1px solid rgba(74,144,226,.3);
+  color:#4a90e2;border-radius:8px;padding:6px 14px;
+  font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;white-space:nowrap;flex-shrink:0;
+}
+.dns-copy-btn:active{ background:rgba(74,144,226,.3); }
+.dns-copy-btn.copied{
+  background:rgba(0,188,120,.15);border-color:rgba(0,188,120,.3);
+  color:#00bc78;
+}
+
+.dns-steps{ display:flex;flex-direction:column;gap:10px;margin-top:4px; }
+.dns-step{
+  display:flex;gap:12px;align-items:flex-start;
+  background:#252838;border-radius:12px;padding:12px 14px;
+}
+.dns-step-num{
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(74,144,226,.15);border:1px solid rgba(74,144,226,.3);
+  color:#4a90e2;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.dns-step-text{ font-size:13px;color:#a0a3b8;line-height:1.6; }
+.dns-step-text strong{ color:#fff;font-weight:600; }
+
+.dns-doh-card{
+  background:linear-gradient(135deg,rgba(124,92,250,.1),rgba(74,144,226,.1));
+  border:1px solid rgba(124,92,250,.25);
+  border-radius:14px;padding:14px 16px;margin-top:8px;
+}
+.dns-doh-title{ font-size:14px;font-weight:600;color:#fff;margin-bottom:4px; }
+.dns-doh-url{
+  font-size:12px;color:#a0a3b8;font-family:monospace;
+  word-break:break-all;line-height:1.5;
+}
+.dns-main-btn{
+  width:100%;padding:14px;border-radius:14px;border:none;
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:700;
+  cursor:pointer;margin-top:16px;
+  background:linear-gradient(135deg,#00bc78,#00a868);
+  color:#fff;
+  transition:opacity .15s;
+}
+.dns-main-btn:active{ opacity:.85; }
+.dns-main-btn.off{
+  background:linear-gradient(135deg,#e74c3c,#c0392b);
+}
+
+/* ── LOADING BAR ── */
+#loading-bar{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),#7c5cfa);z-index:500;transform:scaleX(0);transform-origin:left;transition:none;box-shadow:0 0 6px var(--blue);display:none;}
+
+
+</style>
+</head>
+<body>
+
+<!-- Loading Bar -->
+<div id="loading-bar"></div>
+
+<!-- ════════════════════════════════════
+     IN-APP BROWSER
+════════════════════════════════════ -->
+<div class="iab-wrap" id="iab-wrap">
+  <div class="iab-topbar">
+    <!-- Left: Close -->
+    <button class="iab-close-btn" onclick="iabClose()">✕</button>
+    <!-- Center: URL pill bar (Hola style) -->
+    <div class="iab-urlbox" onclick="iabFocusUrl()">
+      <span class="iab-lock" id="iab-lock">🔒</span>
+      <input class="iab-url-input" id="iab-url-text"
+        placeholder="Search or enter URL..."
+        readonly
+        onclick="iabFocusUrl()"
+        onblur="this.setAttribute('readonly',true)"
+        onkeydown="if(event.key==='Enter') iabNavigateToInput()"
+      />
+    </div>
+    <!-- Right: Shield + Refresh + Share + Menu -->
+    <div class="iab-actions">
+      <button class="iab-act-btn iab-shield-btn" id="iab-shield-btn" title="Secure" onclick="iabCopyUrl()">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/></svg>
+      </button>
+      <button class="iab-act-btn" onclick="iabRefresh()" title="Refresh">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </button>
+      <button class="iab-act-btn" onclick="iabShare()" title="Share">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button class="iab-act-btn" onclick="iabMenu()" title="Menu">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="#c0c4d0"/><circle cx="12" cy="12" r="1.5" fill="#c0c4d0"/><circle cx="12" cy="19" r="1.5" fill="#c0c4d0"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="iab-progress" id="iab-progress"></div>
+  <iframe
+    id="iab-frame"
+    class="iab-frame"
+    allow="autoplay; fullscreen; camera; microphone; payment; geolocation"
+    allowfullscreen
+    allowpaymentrequest
+  ></iframe>
+  <!-- Find on Page bar -->
+  <div class="iab-find-bar" id="iab-find-bar">
+    <input class="iab-find-input" id="iab-find-input" placeholder="Find on page..." oninput="iabFindOnPage()">
+    <span class="iab-find-count" id="iab-find-count"></span>
+    <button class="iab-find-close" onclick="iabCloseFindBar()">✕</button>
+  </div>
+
+  <div class="iab-blocked" id="iab-blocked">
+    <div class="iab-blocked-icon">🔒</div>
+    <div class="iab-blocked-title">Can't open inside app</div>
+    <div class="iab-blocked-url" id="iab-blocked-url"></div>
+    <div class="iab-blocked-msg">
+      This site blocks embedding for security reasons.<br>
+      You can open it in an external browser instead.
+    </div>
+    <button class="iab-open-ext-btn" onclick="iabOpenExternal()">
+      Open in External Browser ↗
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     IAB CONTEXT MENU SHEET
+════════════════════════════════════ -->
+<div class="iab-menu-backdrop" id="iab-menu-backdrop" onclick="iabMenuClose()"></div>
+<div class="iab-menu-sheet" id="iab-menu-sheet">
+  <div class="iab-ms-handle"></div>
+
+  <!-- Site info row -->
+  <div class="iab-ms-sitebox">
+    <div class="iab-ms-favicon" id="iab-ms-favicon">🌐</div>
+    <div class="iab-ms-url" id="iab-ms-url">—</div>
+  </div>
+
+  <!-- Quick action icons (top row) -->
+  <div class="iab-ms-quick">
+    <!-- Share -->
+    <div class="iab-ms-qbtn" onclick="iabShare(); iabMenuClose()">
+      <div class="iab-ms-qicon">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </div>
+      <div class="iab-ms-qlabel">Share</div>
+    </div>
+    <!-- Copy URL -->
+    <div class="iab-ms-qbtn" onclick="iabCopyUrl(); iabMenuClose()">
+      <div class="iab-ms-qicon">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </div>
+      <div class="iab-ms-qlabel">Copy URL</div>
+    </div>
+    <!-- Refresh -->
+    <div class="iab-ms-qbtn" onclick="iabRefresh(); iabMenuClose()">
+      <div class="iab-ms-qicon">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </div>
+      <div class="iab-ms-qlabel">Refresh</div>
+    </div>
+    <!-- Open External -->
+    <div class="iab-ms-qbtn" onclick="iabOpenExternal(); iabMenuClose()">
+      <div class="iab-ms-qicon">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </div>
+      <div class="iab-ms-qlabel">Open In</div>
+    </div>
+  </div>
+
+  <!-- List rows -->
+
+  <!-- Add Bookmark -->
+  <div class="iab-ms-row" onclick="iabAddBookmark(); iabMenuClose()">
+    <div class="iab-ms-row-icon">🔖</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Add to Bookmarks</div>
+      <div class="iab-ms-row-sub">Save this page to your bookmarks</div>
+    </div>
+  </div>
+
+  <!-- Add to Speed Dial / Quick Access -->
+  <div class="iab-ms-row" onclick="iabAddToSpeedDial(); iabMenuClose()">
+    <div class="iab-ms-row-icon">⚡</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Add to Speed Dial</div>
+      <div class="iab-ms-row-sub">Add to quick shortcuts on home</div>
+    </div>
+  </div>
+
+  <!-- Add to Watch Later -->
+  <div class="iab-ms-row" onclick="iabAddWatchLater(); iabMenuClose()">
+    <div class="iab-ms-row-icon">⏰</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Add to Watch Later</div>
+      <div class="iab-ms-row-sub">Save for watching later</div>
+    </div>
+    <span class="iab-ms-row-badge" id="watch-later-count">0</span>
+  </div>
+
+  <!-- Add to Home Screen -->
+  <div class="iab-ms-row" onclick="iabAddHomeScreen(); iabMenuClose()">
+    <div class="iab-ms-row-icon">📲</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Add to Home Screen</div>
+      <div class="iab-ms-row-sub">Create shortcut on device</div>
+    </div>
+  </div>
+
+  <!-- Save Page for Offline -->
+  <div class="iab-ms-row" onclick="iabSaveOffline(); iabMenuClose()">
+    <div class="iab-ms-row-icon">💾</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Save Page for Offline</div>
+      <div class="iab-ms-row-sub">Download & read without internet</div>
+    </div>
+  </div>
+
+  <div class="iab-ms-divider"></div>
+
+  <!-- Find on Page -->
+  <div class="iab-ms-row" onclick="iabOpenFindBar(); iabMenuClose()">
+    <div class="iab-ms-row-icon">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Find on Page</div>
+      <div class="iab-ms-row-sub">Search text on this page</div>
+    </div>
+  </div>
+
+  <!-- Translate Page -->
+  <div class="iab-ms-row" onclick="iabTranslatePage(); iabMenuClose()">
+    <div class="iab-ms-row-icon">🌍</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Translate Page</div>
+      <div class="iab-ms-row-sub">Open in Google Translate</div>
+    </div>
+  </div>
+
+  <!-- Desktop Site toggle -->
+  <div class="iab-ms-row" onclick="iabToggleDesktop()">
+    <div class="iab-ms-row-icon">🖥️</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Desktop Site</div>
+      <div class="iab-ms-row-sub">Load full desktop version</div>
+    </div>
+    <div class="iab-ms-toggle" id="iab-desktop-toggle"></div>
+  </div>
+
+  <!-- No Images toggle -->
+  <div class="iab-ms-row" onclick="iabToggleImages()">
+    <div class="iab-ms-row-icon">🚫</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">No Images</div>
+      <div class="iab-ms-row-sub">Hide images to save data</div>
+    </div>
+    <div class="iab-ms-toggle" id="iab-images-toggle"></div>
+  </div>
+
+  <div class="iab-ms-divider"></div>
+
+  <!-- Offline Pages (Downloads) -->
+  <div class="iab-ms-row" onclick="iabMenuClose(); openSheet('downloads')">
+    <div class="iab-ms-row-icon">📴</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Offline Pages</div>
+      <div class="iab-ms-row-sub">View saved & downloaded pages</div>
+    </div>
+  </div>
+
+  <!-- Files -->
+  <div class="iab-ms-row" onclick="iabMenuClose(); openSheet('downloads')">
+    <div class="iab-ms-row-icon">📂</div>
+    <div class="iab-ms-row-text">
+      <div class="iab-ms-row-label">Files</div>
+      <div class="iab-ms-row-sub">View downloaded files</div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+<!-- ════════════════════════════════════
+     ENGINE PICKER
+════════════════════════════════════ -->
+<div class="engine-overlay" id="engine-overlay" onclick="maybeCloseEngine(event)">
+  <div class="engine-picker">
+    <div class="ep-title">Choose Search Engine</div>
+    <div class="ep-grid" id="ep-grid"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     VOICE OVERLAY
+════════════════════════════════════ -->
+<div class="v-overlay" id="v-overlay">
+  <div class="v-sheet">
+    <div class="vhandle"></div>
+    <div class="v-rings"><div class="vr"></div><div class="vr"></div><div class="vr"></div>
+      <div class="v-core"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
+    </div>
+    <div class="v-status" id="v-status">Listening...</div>
+    <div class="v-transcript" id="v-transcript">—</div>
+    <button class="v-cancel" onclick="closeVoice()">Cancel</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SEARCH OVERLAY
+════════════════════════════════════ -->
+<div class="search-overlay" id="search-overlay">
+  <div class="so-top">
+    <button class="so-back" onclick="closeSearch()">←</button>
+    <div class="so-bar">
+      <button class="so-engine-btn" onclick="openEnginePicker()">
+        <div class="so-engine-logo" id="so-engine-logo"></div>
+        <span class="so-arrow">▾</span>
+      </button>
+      <div class="so-divider"></div>
+      <input type="text" id="so-input" placeholder="Search or type URL" autocomplete="off" spellcheck="false">
+      <button class="so-mic-btn" id="so-mic-btn" onclick="openVoice()">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+      </button>
+    </div>
+    <button class="so-go-btn" onclick="doSearch()">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </div>
+  <div class="so-body">
+    <div class="so-section" id="recent-section">
+      <div class="so-section-head">
+        <div class="so-section-title"><span>🕐</span> Recent searches</div>
+        <button class="so-clear-btn" onclick="clearRecent()">🗑️</button>
+      </div>
+      <div class="recent-chips" id="recent-chips"></div>
+    </div>
+    <div class="so-section" style="margin-top:16px">
+      <div class="so-section-head">
+        <div class="so-section-title"><span>🔥</span> Trending searches</div>
+      </div>
+      <div class="trend-list" id="trend-list"></div>
+    </div>
+    <div class="private-pill" onclick="toggleIncognito(); closeSearch()">👻 Private browsing</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     RIGHT SIDE MENU
+════════════════════════════════════ -->
+<div class="menu-backdrop" id="menu-backdrop" onclick="closeMenu()"></div>
+<div class="side-menu" id="side-menu">
+  <div class="menu-logo-row">
+    <div class="menu-logo">IRIS NEO</div>
+    <div class="menu-sub" id="menu-version-text">v2.0 PWA Edition</div>
+  </div>
+  <div class="menu-row" onclick="newTabAction()">
+    <div class="menu-icon">🏠</div>
+    <div class="menu-text">New Tab<small>Open fresh homepage</small></div>
+  </div>
+  <div class="menu-row" onclick="toggleIncognito()">
+    <div class="menu-icon" id="incog-menu-icon">🕵️</div>
+    <div class="menu-text" id="incog-menu-text">Incognito Mode<small>Browse privately, no history</small></div>
+  </div>
+  <div class="menu-divider"></div>
+  <div class="menu-row" onclick="openSaveAppDialog(); closeMenu()">
+    <div class="menu-icon">📲</div>
+    <div class="menu-text">Save Current as App<small>Add page to quick shortcuts</small></div>
+  </div>
+  <div class="menu-row" onclick="openSheet('bookmarks'); closeMenu()">
+    <div class="menu-icon">🔖</div>
+    <div class="menu-text">Bookmarks<small>Your saved pages</small></div>
+  </div>
+  <div class="menu-row" onclick="openSheet('history'); closeMenu()">
+    <div class="menu-icon">🕐</div>
+    <div class="menu-text">History<small>Recently visited sites</small></div>
+  </div>
+  <div class="menu-row" onclick="openSheet('downloads'); closeMenu()">
+    <div class="menu-icon">⬇️</div>
+    <div class="menu-text">Downloads<small>Files & downloads</small></div>
+  </div>
+  <div class="menu-divider"></div>
+  <div class="menu-row" onclick="clearDataConfirm(); closeMenu()">
+    <div class="menu-icon">🗑️</div>
+    <div class="menu-text">Clear Browsing Data<small>History, cache, cookies</small></div>
+  </div>
+  <div class="menu-row" onclick="openSheet('settings'); closeMenu()">
+    <div class="menu-icon">⚙️</div>
+    <div class="menu-text">Settings<small>Preferences & options</small></div>
+  </div>
+  <div class="menu-divider"></div>
+  <div class="menu-row" onclick="installPWA(); closeMenu()">
+    <div class="menu-icon">📥</div>
+    <div class="menu-text">Install IRIS NEO<small>Add to home screen</small></div>
+  </div>
+  <div class="menu-footer">IRIS NEO — Intelligent Retinal Interface System<br>Built with ❤️ | PWA Edition</div>
+</div>
+
+<!-- ════════════════════════════════════
+     BOTTOM SHEETS
+════════════════════════════════════ -->
+
+<!-- BOOKMARKS -->
+<div class="sheet-backdrop" id="backdrop-bookmarks" onclick="closeSheet('bookmarks')"></div>
+<div class="bottom-sheet" id="sheet-bookmarks">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">🔖 Bookmarks</div>
+    <button class="sheet-close" onclick="closeSheet('bookmarks')">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-action-row">
+      <button class="sheet-btn" onclick="addCurrentBookmark()">+ Bookmark Current Page</button>
+    </div>
+    <div id="bookmarks-list"></div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="sheet-backdrop" id="backdrop-history" onclick="closeSheet('history')"></div>
+<div class="bottom-sheet" id="sheet-history">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">🕐 History</div>
+    <button class="sheet-close" onclick="closeSheet('history')">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-action-row">
+      <button class="sheet-btn" onclick="clearHistory()">🗑️ Clear All History</button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<!-- DOWNLOADS -->
+<div class="sheet-backdrop" id="backdrop-downloads" onclick="closeSheet('downloads')"></div>
+<div class="bottom-sheet" id="sheet-downloads">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">⬇️ Downloads</div>
+    <button class="sheet-close" onclick="closeSheet('downloads')">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-action-row">
+      <button class="sheet-btn" onclick="clearDownloads()">🗑️ Clear Downloads</button>
+    </div>
+    <div id="downloads-list"></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="sheet-backdrop" id="backdrop-tabs" onclick="closeSheet('tabs')"></div>
+<div class="bottom-sheet" id="sheet-tabs">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title" id="tabs-sheet-title">⊞ Tabs (1)</div>
+    <button class="sheet-close" onclick="closeSheet('tabs')">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div id="tabs-list"></div>
+    <button class="new-tab-btn" onclick="newTabAction(); closeSheet('tabs')">＋ New Tab</button>
+  </div>
+</div>
+
+<!-- GAMES -->
+<div class="sheet-backdrop" id="backdrop-games" onclick="closeSheet('games')"></div>
+<div class="bottom-sheet" id="sheet-games">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">🎮 Games Hub</div>
+    <button class="sheet-close" onclick="closeSheet('games')">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="game-cats" id="game-cats"></div>
+    <div class="games-grid" id="games-grid"></div>
+    <div class="game-sites-title">🌐 Game Platforms</div>
+    <div class="game-sites-grid" id="game-sites-grid"></div>
+  </div>
+</div>
+
+<!-- MORE APPS -->
+<div class="sheet-backdrop" id="backdrop-more" onclick="closeSheet('more')"></div>
+<div class="bottom-sheet" id="sheet-more">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">⊞ All Apps</div>
+    <button class="sheet-close" onclick="closeSheet('more')">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div id="more-cats"></div>
+    <div class="more-apps-grid" id="more-apps-grid"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="sheet-backdrop" id="backdrop-settings" onclick="closeSheet('settings')"></div>
+<div class="bottom-sheet" id="sheet-settings">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">⚙️ Settings</div>
+    <button class="sheet-close" onclick="closeSheet('settings')">✕</button>
+  </div>
+  <div class="sheet-body" id="settings-body"></div>
+</div>
+
+<!-- SAVE APP DIALOG -->
+<div class="dialog-overlay" id="save-dialog" onclick="closeSaveDialog(event)">
+  <div class="dialog-box" onclick="event.stopPropagation()">
+    <div class="dialog-title">📲 Save as App</div>
+    <div class="dialog-sub">Add this site to your quick shortcuts</div>
+    <div class="dialog-field">
+      <label class="dialog-label">App Name</label>
+      <input class="dialog-input" id="save-name" type="text" placeholder="My App" maxlength="20">
+    </div>
+    <div class="dialog-field">
+      <label class="dialog-label">URL</label>
+      <input class="dialog-input" id="save-url" type="url" placeholder="https://example.com">
+    </div>
+    <div class="dialog-field">
+      <label class="dialog-label">Icon Emoji (optional)</label>
+      <input class="dialog-input" id="save-emoji" type="text" placeholder="🌐" maxlength="4">
+    </div>
+    <div class="dialog-btns">
+      <button class="btn-cancel" onclick="closeSaveDialog()">Cancel</button>
+      <button class="btn-ok" onclick="saveApp()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ════════════════════════════════════
+     MAIN APP
+════════════════════════════════════ -->
+<div class="app">
+  <div class="scroll-area">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div>
+        <span class="greeting" id="greeting-text">IRIS NEO</span>
+        <div class="incog-indicator" id="incog-indicator">🕵️ Incognito</div>
+        <div class="dns-badge" id="dns-badge" onclick="openDnsPanel()" style="cursor:pointer"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 6v6c0 5.1 3.4 9.8 8 11 4.6-1.2 8-5.9 8-11V6l-8-4z"/></svg> DNS Protected</div>
+      </div>
+      <div class="topbar-right">
+        <button class="menu-btn" onclick="openMenu()">
+          <span></span><span></span><span></span>
+          <div class="red-dot"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-wrap">
+      <div class="search-bar" onclick="openSearch('')">
+        <button class="engine-btn" id="home-engine-btn" onclick="event.stopPropagation(); openEnginePicker(true)">
+          <div class="engine-logo" id="home-engine-logo"></div>
+          <span class="engine-arrow">▾</span>
+        </button>
+        <span class="search-placeholder">Search or type URL</span>
+        <div class="tabs-icon" id="tabs-badge" onclick="event.stopPropagation(); openSheet('tabs')">1</div>
+      </div>
+    </div>
+
+    <!-- Quick Access -->
+    <div class="quick-wrap">
+      <div class="quick-grid" id="quick-grid"></div>
+    </div>
+
+    <!-- Download Hub -->
+    <div class="hub-wrap" id="hub-wrap">
+      <div class="hub-header">
+        <span class="hub-title">Quick Hub</span>
+        <button class="hub-close" onclick="document.getElementById('hub-wrap').style.display='none'">×</button>
+      </div>
+      <div class="hub-grid" id="hub-grid"></div>
+    </div>
+
+    <!-- News Tabs -->
+    <div class="news-tabs-wrap">
+      <div class="news-tabs">
+        <button class="ntab" onclick="switchTab(this,'Discover')">Discover</button>
+        <button class="ntab active" onclick="switchTab(this,'For You')">For You</button>
+        <button class="ntab" onclick="switchTab(this,'Sports')">Sports</button>
+        <button class="ntab" onclick="switchTab(this,'Gallery')">Gallery</button>
+        <button class="ntab" onclick="switchTab(this,'Games')">Games</button>
+      </div>
+    </div>
+
+    <!-- News Feed -->
+    <div class="news-feed" id="news-feed"></div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="goHome()">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="nav-label">HOME</div>
+    </div>
+    <div class="nav-item" id="nav-bm" onclick="openSheet('bookmarks')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="nav-label">SAVED</div>
+    </div>
+    <div class="nav-item" id="nav-games" onclick="openSheet('games')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="16" cy="10" r="1"/><circle cx="18" cy="13" r="1"/></svg></div>
+      <div class="nav-label">GAMES</div>
+    </div>
+    <div class="nav-item" id="nav-tabs" onclick="openSheet('tabs')">
+      <div class="nav-icon"><div class="tab-badge" id="nav-tabs-badge">1</div></div>
+      <div class="nav-label">TABS</div>
+    </div>
+    <div class="nav-item" id="nav-dl" onclick="openSheet('downloads')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+      <div class="nav-label">DOWNLOADS</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// IRIS NEO v2.0 — Complete working browser
+// ════════════════════════════════════════════════════════
+
+// ── FAVICON HELPER ──
+const FAV  = d => `https://www.google.com/s2/favicons?domain=${d}&sz=64`;
+const FAV2 = d => `https://icons.duckduckgo.com/ip3/${d}.ico`;
+const DOMAIN = u => { try{ return new URL(u).hostname; }catch(e){ return u.replace(/^https?:\/\//,'').split('/')[0]; } };
+
+// Color palette for letter avatars
+const _LC = ['#4a90e2','#e2544a','#34c759','#ff9f0a','#7c5cfa','#00c7be','#ff375f','#e67e22'];
+
+// Global favicon error handler — avoids inline URL embedding issues
+function _fe(img, domain, name){
+  if(img.dataset.fb === '1'){
+    // Both CDNs failed → show letter avatar via canvas-free approach
+    img.onerror = null;
+    const L = ((name||domain||'?')[0]).toUpperCase();
+    const C = _LC[L.charCodeAt(0) % _LC.length];
+    // Use a safe base64 SVG — no single quotes inside
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" rx="8" fill="${C}"/><text x="16" y="22" text-anchor="middle" fill="white" font-size="16" font-family="Arial" font-weight="bold">${L}</text></svg>`;
+    img.src = 'data:image/svg+xml;base64,' + btoa(svg);
+    return;
+  }
+  img.dataset.fb = '1';
+  img.src = FAV2(domain || '');
+}
+
+function favImg(domain, name, cls){
+  const d = (domain||'').replace(/"/g,'').replace(/'/g,'');
+  const n = (name||'').replace(/"/g,'').replace(/'/g,'');
+  const c = cls ? ` class="${cls}"` : '';
+  return `<img src="${FAV(d)}" alt="${n||d}"${c} onerror="_fe(this,'${d}','${n}')">`;
+}
+
+// ── STATE ──
+let ST = {
+  engine: 'duckduckgo',
+  incognito: false,
+  currentUrl: '',
+  customApps: [],
+  history: [],
+  bookmarks: [],
+  downloads: [],
+  tabs: [{ id:1, url:'', title:'New Tab', active:true }],
+  tabCounter: 1,
+  settings: { adblock:true, darkMode:true, saveHistory:true, notifications:false, adguardDns:false },
+};
+
+function loadST(){
+  try{
+    const s = JSON.parse(localStorage.getItem('iris_v2')||'{}');
+    if(s.engine){
+      // Migrate old engine IDs to new searchEngines keys
+      const keyMap = { ddg:'duckduckgo', wiki:'wikipedia', yt:'youtube', brave:'brave', bing:'bing', yahoo:'yahoo' };
+      const migrated = keyMap[s.engine] || s.engine;
+      ST.engine = searchEngines[migrated] ? migrated : 'duckduckgo';
+    }
+    if(Array.isArray(s.customApps)) ST.customApps=s.customApps;
+    if(Array.isArray(s.history)) ST.history=s.history;
+    if(Array.isArray(s.bookmarks)) ST.bookmarks=s.bookmarks;
+    if(Array.isArray(s.downloads)) ST.downloads=s.downloads;
+    if(Array.isArray(s.tabs)&&s.tabs.length>0) ST.tabs=s.tabs;
+    if(s.tabCounter) ST.tabCounter=s.tabCounter;
+    if(s.settings) ST.settings={...ST.settings,...s.settings};
+    if(s.incognito!==undefined) ST.incognito=s.incognito;
+  }catch(e){}
+}
+function saveST(){
+  try{ localStorage.setItem('iris_v2', JSON.stringify(ST)); }catch(e){}
+}
+
+// ── SEARCH ENGINES ──
+const searchEngines = {
+  duckduckgo: {
+    name: 'DuckDuckGo',
+    url:  'https://duckduckgo.com/?q=',
+    icon: `<svg viewBox="0 0 48 48" width="28" height="28"><circle cx="24" cy="24" r="22" fill="#DE5833"/><ellipse cx="24" cy="22" rx="13" ry="12" fill="white"/><circle cx="19" cy="19" r="3" fill="#333"/><circle cx="20" cy="18" r="1" fill="white"/><circle cx="29" cy="19" r="3" fill="#333"/><circle cx="30" cy="18" r="1" fill="white"/><ellipse cx="24" cy="30" rx="7" ry="4" fill="#DE5833"/><ellipse cx="24" cy="29" rx="6" ry="3" fill="#f5a623"/></svg>`
+  },
+  brave: {
+    name: 'Brave Search',
+    url:  'https://search.brave.com/search?q=',
+    icon: `<svg viewBox="0 0 48 48" width="28" height="28"><circle cx="24" cy="24" r="22" fill="#FB542B"/><path d="M24 10L34 14L37 24L32 34L24 38L16 34L11 24L14 14Z" fill="white" opacity="0.9"/><circle cx="19" cy="20" r="2.5" fill="#FB542B"/><circle cx="29" cy="20" r="2.5" fill="#FB542B"/><path d="M18 27Q24 32 30 27" stroke="#FB542B" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`
+  },
+  wikipedia: {
+    name: 'Wikipedia',
+    url:  'https://en.wikipedia.org/wiki/Special:Search?search=',
+    icon: `<svg viewBox="0 0 48 48" width="28" height="28"><circle cx="24" cy="24" r="22" fill="#1a1a1a"/><text x="11" y="33" font-family="serif" font-size="28" font-weight="bold" fill="white">W</text></svg>`
+  },
+  youtube: {
+    name: 'YouTube',
+    url:  'https://www.youtube.com/results?search_query=',
+    icon: `<svg viewBox="0 0 48 48" width="28" height="28"><rect width="48" height="48" rx="10" fill="#FF0000"/><polygon points="20,15 20,33 35,24" fill="white"/></svg>`
+  },
+  bing: {
+    name:    'Bing',
+    url:     'https://www.bing.com/search?q=',
+    warning: true,
+    icon:    `<svg viewBox="0 0 48 48" width="28" height="28"><defs><linearGradient id="bG2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00adef"/><stop offset="100%" stop-color="#0078d4"/></linearGradient></defs><circle cx="24" cy="24" r="22" fill="url(#bG2)"/><path d="M14 8L14 40L22 35L32 28L24 22L22 23L22 16Z" fill="white" opacity="0.9"/><path d="M22 22L22 35L32 28Z" fill="white" opacity="0.6"/></svg>`
+  },
+  yahoo: {
+    name:    'Yahoo',
+    url:     'https://search.yahoo.com/search?p=',
+    warning: true,
+    icon:    `<svg viewBox="0 0 48 48" width="28" height="28"><circle cx="24" cy="24" r="22" fill="#6001D2"/><text x="24" y="31" text-anchor="middle" font-family="Arial Black" font-size="22" font-weight="900" fill="white">Y!</text></svg>`
+  }
+};
+
+// Derive ordered array for rendering
+const ENGINES = Object.entries(searchEngines).map(([id, e]) => ({ id, ...e }));
+
+function getEngine(){
+  return searchEngines[ST.engine]
+    ? { id: ST.engine, ...searchEngines[ST.engine] }
+    : { id:'duckduckgo', ...searchEngines.duckduckgo };
+}
+
+// Load saved state NOW — after searchEngines is defined so engine migration works correctly
+loadST();
+
+// ── QUICK SITES ──
+const MAIN_SITES = [
+  {name:'Google',    url:'https://google.com',            d:'google.com'},
+  {name:'YouTube',   url:'https://youtube.com',           d:'youtube.com'},
+  {name:'Instagram', url:'https://instagram.com',         d:'instagram.com'},
+  {name:'Facebook',  url:'https://facebook.com',          d:'facebook.com'},
+  {name:'WhatsApp',  url:'https://web.whatsapp.com',      d:'whatsapp.com'},
+  {name:'ChatGPT',   url:'https://chatgpt.com',           d:'chatgpt.com'},
+  {name:'Cricbuzz',  url:'https://cricbuzz.com',          d:'cricbuzz.com'},
+  {name:'Netflix',   url:'https://netflix.com',           d:'netflix.com'},
+  {name:'More',      url:null,                            d:null},
+];
+
+// ── HUB SITES ──
+const HUB_SITES = [
+  {name:'Wallpaper', url:'https://wallpaperscraft.com',   d:'wallpaperscraft.com'},
+  {name:'APKPure',   url:'https://apkpure.com',           d:'apkpure.com'},
+  {name:'Stickers',  url:'https://sticker.ly',            d:'sticker.ly'},
+  {name:'Decor',     url:'https://pinterest.com',         d:'pinterest.com'},
+  {name:'Movies',    url:'https://jiocinema.com',         d:'jiocinema.com'},
+];
+
+// ── ALL APPS CATEGORIES ──
+const ALL_APPS = {
+  '🤖 AI':[
+    {name:'ChatGPT',    url:'https://chatgpt.com',              d:'chatgpt.com'},
+    {name:'Gemini',     url:'https://gemini.google.com',        d:'gemini.google.com'},
+    {name:'Copilot',    url:'https://copilot.microsoft.com',    d:'copilot.microsoft.com'},
+    {name:'Perplexity', url:'https://perplexity.ai',            d:'perplexity.ai'},
+    {name:'Notion AI',  url:'https://notion.so',                d:'notion.so'},
+    {name:'Canva AI',   url:'https://canva.com',                d:'canva.com'},
+    {name:'Firefly',    url:'https://firefly.adobe.com',        d:'firefly.adobe.com'},
+    {name:'Runway',     url:'https://runwayml.com',             d:'runwayml.com'},
+    {name:'HuggingFace',url:'https://huggingface.co',           d:'huggingface.co'},
+    {name:'DeepAI',     url:'https://deepai.org',               d:'deepai.org'},
+  ],
+  '💬 Social':[
+    {name:'WhatsApp',   url:'https://web.whatsapp.com',         d:'whatsapp.com'},
+    {name:'Facebook',   url:'https://facebook.com',             d:'facebook.com'},
+    {name:'Instagram',  url:'https://instagram.com',            d:'instagram.com'},
+    {name:'Telegram',   url:'https://web.telegram.org',         d:'telegram.org'},
+    {name:'X',          url:'https://x.com',                    d:'x.com'},
+    {name:'Discord',    url:'https://discord.com/app',          d:'discord.com'},
+    {name:'Snapchat',   url:'https://web.snapchat.com',         d:'snapchat.com'},
+    {name:'ShareChat',  url:'https://sharechat.com',            d:'sharechat.com'},
+    {name:'Moj',        url:'https://mojapp.in',                d:'mojapp.in'},
+    {name:'Reddit',     url:'https://reddit.com',               d:'reddit.com'},
+  ],
+  '📺 Video':[
+    {name:'YouTube',    url:'https://youtube.com',              d:'youtube.com'},
+    {name:'Netflix',    url:'https://netflix.com',              d:'netflix.com'},
+    {name:'Prime Video',url:'https://primevideo.com',           d:'primevideo.com'},
+    {name:'Hotstar',    url:'https://hotstar.com',              d:'hotstar.com'},
+    {name:'Sony LIV',   url:'https://sonyliv.com',              d:'sonyliv.com'},
+    {name:'JioCinema',  url:'https://jiocinema.com',            d:'jiocinema.com'},
+    {name:'MX Player',  url:'https://mxplayer.in',              d:'mxplayer.in'},
+    {name:'Zee5',       url:'https://zee5.com',                 d:'zee5.com'},
+    {name:'Aha',        url:'https://aha.video',                d:'aha.video'},
+    {name:'Sun NXT',    url:'https://sunnxt.com',               d:'sunnxt.com'},
+  ],
+  '🛒 Shopping':[
+    {name:'Amazon',     url:'https://amazon.in',                d:'amazon.in'},
+    {name:'Flipkart',   url:'https://flipkart.com',             d:'flipkart.com'},
+    {name:'Myntra',     url:'https://myntra.com',               d:'myntra.com'},
+    {name:'Ajio',       url:'https://ajio.com',                 d:'ajio.com'},
+    {name:'Nykaa',      url:'https://nykaa.com',                d:'nykaa.com'},
+    {name:'Meesho',     url:'https://meesho.com',               d:'meesho.com'},
+    {name:'Snapdeal',   url:'https://snapdeal.com',             d:'snapdeal.com'},
+    {name:'Tata CLiQ',  url:'https://tatacliq.com',             d:'tatacliq.com'},
+    {name:'Shopsy',     url:'https://shopsy.in',                d:'shopsy.in'},
+    {name:'JioMart',    url:'https://jiomart.com',              d:'jiomart.com'},
+  ],
+  '💰 Finance':[
+    {name:'PhonePe',    url:'https://phonepe.com',              d:'phonepe.com'},
+    {name:'Paytm',      url:'https://paytm.com',                d:'paytm.com'},
+    {name:'Google Pay', url:'https://pay.google.com',           d:'pay.google.com'},
+    {name:'BHIM',       url:'https://bhimupi.org.in',           d:'bhimupi.org.in'},
+    {name:'Groww',      url:'https://groww.in',                 d:'groww.in'},
+    {name:'Zerodha',    url:'https://zerodha.com',              d:'zerodha.com'},
+    {name:'SBI',        url:'https://onlinesbi.sbi',            d:'onlinesbi.sbi'},
+    {name:'HDFC',       url:'https://hdfcbank.com',             d:'hdfcbank.com'},
+    {name:'ICICI',      url:'https://icicibank.com',            d:'icicibank.com'},
+    {name:'Axis Bank',  url:'https://axisbank.com',             d:'axisbank.com'},
+  ],
+  '🔧 Tools':[
+    {name:'Drive',      url:'https://drive.google.com',         d:'drive.google.com'},
+    {name:'Translate',  url:'https://translate.google.com',     d:'translate.google.com'},
+    {name:'Maps',       url:'https://maps.google.com',          d:'maps.google.com'},
+    {name:'Canva',      url:'https://canva.com',                d:'canva.com'},
+    {name:'Zoom',       url:'https://zoom.us',                  d:'zoom.us'},
+    {name:'Truecaller', url:'https://truecaller.com',           d:'truecaller.com'},
+    {name:'Speedtest',  url:'https://speedtest.net',            d:'speedtest.net'},
+    {name:'Remove.bg',  url:'https://remove.bg',                d:'remove.bg'},
+    {name:'ILovePDF',   url:'https://ilovepdf.com',             d:'ilovepdf.com'},
+    {name:'Smallpdf',   url:'https://smallpdf.com',             d:'smallpdf.com'},
+  ],
+  '📰 News':[
+    {name:'NDTV',       url:'https://ndtv.com',                 d:'ndtv.com'},
+    {name:'Times of India',url:'https://timesofindia.com',      d:'timesofindia.com'},
+    {name:'HT',         url:'https://hindustantimes.com',       d:'hindustantimes.com'},
+    {name:'Indian Express',url:'https://indianexpress.com',     d:'indianexpress.com'},
+    {name:'The Hindu',  url:'https://thehindu.com',             d:'thehindu.com'},
+    {name:'Aaj Tak',    url:'https://aajtak.in',                d:'aajtak.in'},
+    {name:'Zee News',   url:'https://zeenews.india.com',        d:'zeenews.india.com'},
+    {name:'News18',     url:'https://news18.com',               d:'news18.com'},
+    {name:'Reuters',    url:'https://reuters.com',              d:'reuters.com'},
+    {name:'BBC',        url:'https://bbc.com',                  d:'bbc.com'},
+  ],
+  '💼 Jobs':[
+    {name:'LinkedIn',   url:'https://linkedin.com',             d:'linkedin.com'},
+    {name:'Naukri',     url:'https://naukri.com',               d:'naukri.com'},
+    {name:'Indeed',     url:'https://indeed.co.in',             d:'indeed.co.in'},
+    {name:'Glassdoor',  url:'https://glassdoor.co.in',          d:'glassdoor.co.in'},
+    {name:'Shine',      url:'https://shine.com',                d:'shine.com'},
+    {name:'WorkIndia',  url:'https://workindia.in',             d:'workindia.in'},
+    {name:'Unstop',     url:'https://unstop.com',               d:'unstop.com'},
+    {name:'Foundit',    url:'https://foundit.in',               d:'foundit.in'},
+    {name:'CutShort',   url:'https://cutshort.io',              d:'cutshort.io'},
+    {name:'Apna',       url:'https://apna.co',                  d:'apna.co'},
+    {name:'TimesJobs',  url:'https://timesjobs.com',            d:'timesjobs.com'},
+    {name:'Freshersworld',url:'https://freshersworld.com',      d:'freshersworld.com'},
+  ],
+  '🎓 Education':[
+    {name:'Khan Academy',url:'https://khanacademy.org',         d:'khanacademy.org'},
+    {name:'Coursera',   url:'https://coursera.org',             d:'coursera.org'},
+    {name:'Udemy',      url:'https://udemy.com',                d:'udemy.com'},
+    {name:'edX',        url:'https://edx.org',                  d:'edx.org'},
+    {name:'Duolingo',   url:'https://duolingo.com',             d:'duolingo.com'},
+    {name:'Vedantu',    url:'https://vedantu.com',              d:'vedantu.com'},
+    {name:'Unacademy',  url:'https://unacademy.com',            d:'unacademy.com'},
+    {name:'Physics Wallah',url:'https://pw.live',               d:'pw.live'},
+    {name:'Toppr',      url:'https://toppr.com',                d:'toppr.com'},
+  ],
+  '🎵 Music':[
+    {name:'Spotify',    url:'https://open.spotify.com',         d:'spotify.com'},
+    {name:'Wynk',       url:'https://wynk.in',                  d:'wynk.in'},
+    {name:'Gaana',      url:'https://gaana.com',                d:'gaana.com'},
+    {name:'JioSaavn',   url:'https://jiosaavn.com',             d:'jiosaavn.com'},
+    {name:'Amazon Music',url:'https://music.amazon.in',         d:'music.amazon.in'},
+    {name:'YT Music',   url:'https://music.youtube.com',        d:'music.youtube.com'},
+    {name:'Radio Mirchi',url:'https://mirchi.in',               d:'mirchi.in'},
+    {name:'Hungama',    url:'https://hungama.com',              d:'hungama.com'},
+  ],
+  '🎮 Gaming':[
+    {name:'BGMI',       url:'https://battlegroundsmobileindia.com',d:'battlegroundsmobileindia.com'},
+    {name:'Free Fire',  url:'https://ff.garena.com',            d:'ff.garena.com'},
+    {name:'Ludo King',  url:'https://ludoking.com',             d:'ludoking.com'},
+    {name:'Dream11',    url:'https://dream11.com',              d:'dream11.com'},
+    {name:'MPL',        url:'https://mpl.live',                 d:'mpl.live'},
+    {name:'Xbox',       url:'https://xbox.com',                 d:'xbox.com'},
+    {name:'PlayStation',url:'https://playstation.com',          d:'playstation.com'},
+    {name:'Steam',      url:'https://store.steampowered.com',   d:'steampowered.com'},
+    {name:'Epic Games', url:'https://epicgames.com',            d:'epicgames.com'},
+    {name:'WinZO',      url:'https://winzogames.com',           d:'winzogames.com'},
+  ],
+  '📚 Books':[
+    {name:'Play Books', url:'https://play.google.com/books',    d:'play.google.com'},
+    {name:'Wattpad',    url:'https://wattpad.com',              d:'wattpad.com'},
+    {name:'Goodreads',  url:'https://goodreads.com',            d:'goodreads.com'},
+    {name:'Scribd',     url:'https://scribd.com',               d:'scribd.com'},
+    {name:'Kobo',       url:'https://kobo.com',                 d:'kobo.com'},
+    {name:'Storytel',   url:'https://storytel.com',             d:'storytel.com'},
+    {name:'Internet Archive',url:'https://archive.org',         d:'archive.org'},
+    {name:'Open Library',url:'https://openlibrary.org',         d:'openlibrary.org'},
+    {name:'Gutenberg',  url:'https://gutenberg.org',            d:'gutenberg.org'},
+  ],
+  '✈️ Travel':[
+    {name:'MakeMyTrip', url:'https://makemytrip.com',           d:'makemytrip.com'},
+    {name:'Goibibo',    url:'https://goibibo.com',              d:'goibibo.com'},
+    {name:'Cleartrip',  url:'https://cleartrip.com',            d:'cleartrip.com'},
+    {name:'Yatra',      url:'https://yatra.com',                d:'yatra.com'},
+    {name:'OYO',        url:'https://oyorooms.com',             d:'oyorooms.com'},
+    {name:'Booking',    url:'https://booking.com',              d:'booking.com'},
+    {name:'Agoda',      url:'https://agoda.com',                d:'agoda.com'},
+    {name:'Skyscanner', url:'https://skyscanner.co.in',         d:'skyscanner.co.in'},
+    {name:'Tripadvisor',url:'https://tripadvisor.in',           d:'tripadvisor.in'},
+  ],
+  '🏢 Business':[
+    {name:'Forbes',     url:'https://forbes.com',               d:'forbes.com'},
+    {name:'Bloomberg',  url:'https://bloomberg.com',            d:'bloomberg.com'},
+    {name:'Economic Times',url:'https://economictimes.com',     d:'economictimes.com'},
+    {name:'Inc42',      url:'https://inc42.com',                d:'inc42.com'},
+    {name:'YourStory',  url:'https://yourstory.com',            d:'yourstory.com'},
+    {name:'Wipro',      url:'https://wipro.com',                d:'wipro.com'},
+    {name:'Infosys',    url:'https://infosys.com',              d:'infosys.com'},
+    {name:'Tata',       url:'https://tata.com',                 d:'tata.com'},
+    {name:'Reliance',   url:'https://ril.com',                  d:'ril.com'},
+    {name:'Startup India',url:'https://startupindia.gov.in',    d:'startupindia.gov.in'},
+  ],
+  '⚽ Sports':[
+    {name:'Cricbuzz',   url:'https://cricbuzz.com',             d:'cricbuzz.com'},
+    {name:'ESPNcricinfo',url:'https://espncricinfo.com',        d:'espncricinfo.com'},
+    {name:'IPL',        url:'https://iplt20.com',               d:'iplt20.com'},
+    {name:'ISL',        url:'https://indiansuperleague.com',    d:'indiansuperleague.com'},
+    {name:'Pro Kabaddi',url:'https://prokabaddi.com',           d:'prokabaddi.com'},
+    {name:'NDTV Sports',url:'https://sports.ndtv.com',          d:'sports.ndtv.com'},
+    {name:'Sportskeeda',url:'https://sportskeeda.com',          d:'sportskeeda.com'},
+    {name:'BCCI',       url:'https://bcci.tv',                  d:'bcci.tv'},
+  ],
+  '📷 Photography':[
+    {name:'Pexels',     url:'https://pexels.com',               d:'pexels.com'},
+    {name:'Unsplash',   url:'https://unsplash.com',             d:'unsplash.com'},
+    {name:'Getty',      url:'https://gettyimages.in',           d:'gettyimages.in'},
+    {name:'Shutterstock',url:'https://shutterstock.com',        d:'shutterstock.com'},
+    {name:'EyeEm',      url:'https://eyeem.com',               d:'eyeem.com'},
+  ],
+  '🛕 Religion':[
+    {name:'ISKCON',     url:'https://iskcon.org',               d:'iskcon.org'},
+    {name:'Art of Living',url:'https://artofliving.org',        d:'artofliving.org'},
+    {name:'BAPS',       url:'https://baps.org',                 d:'baps.org'},
+    {name:'Panchang',   url:'https://drikpanchang.com',         d:'drikpanchang.com'},
+    {name:'IslamQA',    url:'https://islamqa.info',             d:'islamqa.info'},
+    {name:'Quran',      url:'https://quran.com',                d:'quran.com'},
+    {name:'Sai Baba',   url:'https://saibaba.ws',               d:'saibaba.ws'},
+  ],
+  '🏛️ Government':[
+    {name:'UIDAI',      url:'https://uidai.gov.in',             d:'uidai.gov.in'},
+    {name:'IRCTC',      url:'https://irctc.co.in',              d:'irctc.co.in'},
+    {name:'UMANG',      url:'https://web.umang.gov.in',         d:'umang.gov.in'},
+    {name:'Health Portal',url:'https://nhp.gov.in',            d:'nhp.gov.in'},
+  ],
+  '👶 Parenting':[
+    {name:'BabyCenter', url:'https://babycenter.in',            d:'babycenter.in'},
+    {name:'FirstCry',   url:'https://firstcry.com',             d:'firstcry.com'},
+    {name:'BabyChakra', url:'https://babychakra.com',           d:'babychakra.com'},
+    {name:'WhatToExpect',url:'https://whattoexpect.com',        d:'whattoexpect.com'},
+    {name:'MomJunction',url:'https://momjunction.com',          d:'momjunction.com'},
+    {name:'Kidsstoppress',url:'https://kidsstoppress.com',      d:'kidsstoppress.com'},
+    {name:'Healthline', url:'https://healthline.com',           d:'healthline.com'},
+    {name:'Asianparent',url:'https://theasianparent.com',       d:'theasianparent.com'},
+  ],
+};
+
+// ── GAMES ──
+const GAMES = {
+  'All':[
+    {n:'Subway Surfers', u:'https://poki.com/en/g/subway-surfers',          d:'poki.com', e:'🏃'},
+    {n:'Chess',          u:'https://www.chess.com/play/online',             d:'chess.com',e:'♟️'},
+    {n:'8 Ball Pool',    u:'https://miniclip.com/games/8-ball-pool/',       d:'miniclip.com',e:'🎱'},
+    {n:'2048',           u:'https://play2048.co',                           d:'play2048.co',e:'🔢'},
+    {n:'Snake',          u:'https://poki.com/en/g/snake-game',              d:'poki.com', e:'🐍'},
+    {n:'Minecraft',      u:'https://classic.minecraft.net',                 d:'minecraft.net',e:'⛏️'},
+    {n:'Moto X3M',       u:'https://poki.com/en/g/moto-x3m',               d:'poki.com', e:'🏍️'},
+    {n:'Stickman',       u:'https://poki.com/en/g/stickman-hook',           d:'poki.com', e:'🦸'},
+  ],
+  'Action':[
+    {n:'Subway Surfers', u:'https://poki.com/en/g/subway-surfers',          d:'poki.com', e:'🏃'},
+    {n:'Stickman',       u:'https://poki.com/en/g/stickman-hook',           d:'poki.com', e:'🦸'},
+    {n:'Bullet Force',   u:'https://crazygames.com/game/bullet-force-multiplayer',d:'crazygames.com',e:'🔫'},
+    {n:'Temple Run',     u:'https://poki.com/en/g/temple-run-2',            d:'poki.com', e:'🏛️'},
+  ],
+  'Sports':[
+    {n:'8 Ball Pool',    u:'https://miniclip.com/games/8-ball-pool/',       d:'miniclip.com',e:'🎱'},
+    {n:'Basketball',     u:'https://poki.com/en/g/basketball-stars',        d:'poki.com', e:'🏀'},
+    {n:'Mini Golf',      u:'https://crazygames.com/game/golf-royale',       d:'crazygames.com',e:'⛳'},
+    {n:'Soccer',         u:'https://crazygames.com/game/soccer-skills-euro-cup',d:'crazygames.com',e:'⚽'},
+  ],
+  'Puzzle':[
+    {n:'2048',           u:'https://play2048.co',                           d:'play2048.co',e:'🔢'},
+    {n:'Sudoku',         u:'https://sudoku.com',                            d:'sudoku.com',e:'🔣'},
+    {n:'Jigsaw',         u:'https://poki.com/en/g/daily-jigsaw',            d:'poki.com', e:'🧩'},
+    {n:'Chess',          u:'https://www.chess.com/play/online',             d:'chess.com',e:'♟️'},
+  ],
+  'Racing':[
+    {n:'Moto X3M',       u:'https://poki.com/en/g/moto-x3m',               d:'poki.com', e:'🏍️'},
+    {n:'Car Rush',       u:'https://poki.com/en/g/car-rush',                d:'poki.com', e:'🚗'},
+    {n:'Formula Rush',   u:'https://crazygames.com/game/formula-rush',      d:'crazygames.com',e:'🏎️'},
+    {n:'Bike Race',      u:'https://poki.com/en/g/bike-rush',               d:'poki.com', e:'🚴'},
+  ],
+};
+
+const GAME_SITES = [
+  {n:'Poki',        u:'https://poki.com',           d:'poki.com'},
+  {n:'CrazyGames',  u:'https://crazygames.com',     d:'crazygames.com'},
+  {n:'Miniclip',    u:'https://miniclip.com',       d:'miniclip.com'},
+  {n:'Chess.com',   u:'https://chess.com',          d:'chess.com'},
+  {n:'Y8 Games',    u:'https://y8.com',             d:'y8.com'},
+  {n:'AddGames',    u:'https://addictinggames.com', d:'addictinggames.com'},
+];
+
+// ── NEWS DATA ──
+const NEWS_DATA = {
+  'For You':[
+    {src:'Hindustan Times',time:'51min',title:'Probe ordered into Kullu road mishap that claimed four lives',e:'🚗'},
+    {src:'NDTV',time:'1h',title:'India-Pakistan border tensions ease after overnight ceasefire agreement',e:'🇮🇳'},
+    {src:'Times of India',time:'2h',title:'RBI cuts repo rate by 25 basis points to boost economic growth',e:'💰'},
+    {src:'The Hindu',time:'3h',title:'Scientists discover new exoplanet in habitable zone 40 light years away',e:'🌌'},
+    {src:'BBC News',time:'4h',title:'Global summit on AI safety concludes with landmark framework agreement',e:'🌍'},
+  ],
+  'Discover':[
+    {src:'Reuters',time:'30min',title:'Oil prices surge 3% as OPEC+ announces surprise production cuts',e:'⛽'},
+    {src:'TechCrunch',time:'1h',title:'OpenAI unveils GPT-5 with real-time vision and action capabilities',e:'🤖'},
+    {src:'NDTV',time:'2h',title:'IMF raises India growth forecast to 6.8% for FY2025-26',e:'📈'},
+    {src:'BBC',time:'3h',title:'Climate summit: 80 nations sign historic emission reduction pact',e:'🌿'},
+    {src:'WSJ',time:'4h',title:'Apple announces foldable iPhone for Q4 2025 launch',e:'📱'},
+  ],
+  'Sports':[
+    {src:'Cricbuzz',time:'10min',title:'MI vs SRH: Mumbai Indians win by 6 wickets in thrilling chase',e:'🏏'},
+    {src:'ESPNcricinfo',time:'30min',title:'Virat Kohli hits his 52nd Test century against England at Lord\'s',e:'🏏'},
+    {src:'ESPN',time:'45min',title:'PSG beats Bayern Munich 3-1 to advance to Champions League final',e:'⚽'},
+    {src:'Sportskeeda',time:'1h',title:'Pro Kabaddi League: Jaipur Pink Panthers qualify for final',e:'🤼'},
+    {src:'NDTV Sports',time:'2h',title:'PV Sindhu wins gold at Asia Championships in badminton',e:'🏸'},
+  ],
+  'Gallery':[
+    {src:'Nat Geo',time:'1h',title:'Stunning aurora borealis lights up skies across northern India',e:'🌌'},
+    {src:'NASA',time:'2h',title:'James Webb captures most detailed image of distant galaxy cluster',e:'🔭'},
+    {src:'Reuters',time:'3h',title:'Wildlife photography winners 2025 revealed — breathtaking shots',e:'📸'},
+    {src:'AFP',time:'4h',title:'Cherry blossom season peaks early in Japan amid warming temperatures',e:'🌸'},
+  ],
+  'Games':[
+    {src:'IGN India',time:'1h',title:'BGMI Season 4 launches with new Erangel 3.0 map and 4K mode',e:'🎮'},
+    {src:'GameSpot',time:'2h',title:'GTA VI release date confirmed for November 2025 on PC and consoles',e:'🕹️'},
+    {src:'Eurogamer',time:'3h',title:'Minecraft reaches 300 million sales — most played game ever',e:'⛏️'},
+    {src:'TouchArcade',time:'4h',title:'Free Fire OB50 update brings new character, gun and map changes',e:'🔫'},
+  ],
+};
+
+
+// ════════════════════════════════════
+// ADGUARD DNS BLOCKER
+// ════════════════════════════════════
+const AD_DOMAINS = new Set([
+  // ── Ad Networks ──
+  'doubleclick.net','googleadservices.com','googlesyndication.com','adservice.google.com',
+  'ads.google.com','pagead2.googlesyndication.com','adnxs.com','adsystem.com',
+  'advertising.com','adbrite.com','adclick.g.doubleclick.net','adform.net',
+  'adtech.de','adtechus.com','akamaihd.net','amazon-adsystem.com',
+  'analytics.yahoo.com','atdmt.com','atwola.com','bango.net','banner.eu',
+  'bannerfarm.com','bbelements.com','bidvertiser.com','buysellads.com',
+  'casalemedia.com','chitika.net','clickbooth.com','clicksor.com',
+  'contextweb.com','cpxinteractive.com','criteo.com','criteo.net',
+  'dc.ads.linkedin.com','demdex.net','e-planning.net','eyereturn.com',
+  'fb.me','fbcdn.net','gads.pubmatic.com','getclicky.com',
+  'gumgum.com','ib.adnxs.com','imrworldwide.com','indexww.com',
+  'intellitxt.com','interclick.com','inuvo.com','jumpingads.com',
+  'liveintent.com','mediaplex.com','mookie1.com','moatads.com',
+  'openx.net','openx.org','outbrain.com','overture.com','phluant.com',
+  'plista.com','pointroll.com','popads.net','popcash.net','pornhub.com',
+  'propellerads.com','pubmatic.com','quantserve.com','revenuemantra.com',
+  'rfihub.com','rubiconproject.com','smaato.com','smartadserver.com',
+  'smartclip.net','sonobi.com','spotxchange.com','springserve.com',
+  'ssl.google-analytics.com','taboola.com','tapad.com','teads.tv',
+  'tradedoubler.com','trafficjunky.net','tribalfusion.com','turn.com',
+  'unrulymedia.com','valueclick.com','valueclick.net','vertamedia.com',
+  'vibrantmedia.com','videohub.tv','w55c.net','yieldmanager.com',
+  'yieldmanager.net','yieldmo.com','zanox.com','zedo.com',
+  // ── Trackers ──
+  'google-analytics.com','analytics.google.com','ga.js','stats.g.doubleclick.net',
+  'segment.com','segment.io','mixpanel.com','amplitude.com','heap.io',
+  'hotjar.com','fullstory.com','logrocket.com','mouseflow.com',
+  'newrelic.com','nr-data.net','sentry.io','bugsnag.com','raygun.io',
+  'pingdom.net','statcounter.com','woopra.com','kissmetrics.com',
+  'clicktale.net','crazyegg.com','inspectlet.com','luckyorange.com',
+  'tinyanalytics.io','chartbeat.com','comscore.com','scorecardresearch.com',
+  'nielsen.com','krxd.net','adsrvr.org','serving-sys.com',
+  // ── Malware/Phishing common patterns ──
+  'adware.com','spyware.com','malware.com','trojan.com',
+  // ── Popup/redirect networks ──
+  'popunder.ru','pop.cash','s.ad.plus','revcontent.com','mgid.com',
+  'zergnet.com','adf.ly','adfly.com','linkbucks.com','shorte.st',
+  'bc.vc','ouo.io','ay.gy','adfoc.us','exe.io',
+]);
+
+const ADGUARD_DOH = 'https://dns.adguard-dns.com/dns-query';
+let bypassUrl = null;
+
+function isDnsBlocked(url){
+  if(!ST.settings.adguardDns) return false;
+  try{
+    const hostname = new URL(url).hostname.replace(/^www\./,'');
+    // Check exact domain
+    if(AD_DOMAINS.has(hostname)) return true;
+    // Check parent domains (e.g. sub.adnxs.com → adnxs.com)
+    const parts = hostname.split('.');
+    for(let i=1;i<parts.length-1;i++){
+      if(AD_DOMAINS.has(parts.slice(i).join('.'))) return true;
+    }
+    return false;
+  }catch(_){ return false; }
+}
+
+// Optional: AdGuard DoH lookup for unknown domains
+// checkAdGuardDoH — simplified, no async (compatibility fix)
+function checkAdGuardDoH(hostname){
+  return false; // Local blocklist handles blocking; DoH lookup skipped for compatibility
+}
+
+function showBlockedScreen(url){ showBlockNotice(url); }
+
+function hideBlockedScreen(){}
+
+function bypassBlock(){}
+
+function updateDnsBadge(){
+  document.getElementById('dns-badge').classList.toggle('on', !!ST.settings.adguardDns);
+}
+
+const TRENDING = [
+  {rank:1,q:'rcb vs gt',vol:'8.8K'},{rank:2,q:'venkatesh iyer',vol:'8.7K'},
+  {rank:3,q:'rcb बनाम gt',vol:'8.6K'},{rank:4,q:'vedanta demerger',vol:'8.5K'},
+  {rank:5,q:'शतक',vol:'8.4K'},{rank:6,q:'वर्षा',vol:'8.3K'},
+  {rank:7,q:'cbse class 12th result',vol:'8.2K'},{rank:8,q:'icse results class 10',vol:'8.1K'},
+  {rank:9,q:'kara movie review',vol:'8K'},{rank:10,q:'oneplus realme merger',vol:'7.9K'},
+];
+
+// ── RECENT SEARCHES ──
+let recentSearches = ST.incognito ? [] : JSON.parse(localStorage.getItem('phantom_recent')||'["cricbuzz","chatgpt"]');
+
+// ════════════════════════════════════
+// INIT
+// ════════════════════════════════════
+function init(){
+  setupPWA();
+  updateGreeting();
+  buildQuickGrid();
+  buildHubGrid();
+  renderNews('For You');
+  renderTrending();
+  renderRecent();
+  updateEngineDisplay();
+  renderEnginePicker();
+  buildMoreCats();
+  buildGamePanel();
+  buildSettingsPanel();
+  updateTabBadge();
+  updateIncogDisplay();
+  updateDnsBadge();
+  // Ensure tabs have at least one
+  if(!ST.tabs || ST.tabs.length === 0){
+    ST.tabs = [{id:1, url:'', title:'New Tab', active:true}];
+    ST.tabCounter = 1;
+  }
+  // Ensure one active tab
+  if(!ST.tabs.find(t=>t.active)) ST.tabs[0].active = true;
+  updateTabBadge();
+}
+
+// ── GREETING ──
+function updateGreeting(){
+  const h = new Date().getHours();
+  const g = h<12?'Good Morning':h<17?'Good Afternoon':h<21?'Good Evening':'Good Night';
+  document.getElementById('greeting-text').textContent = 'IRIS NEO';
+}
+
+// ── QUICK GRID ──
+function buildQuickGrid(){
+  const grid = document.getElementById('quick-grid');
+  const allSites = [...MAIN_SITES];
+  // Add custom apps
+  ST.customApps.forEach(a => allSites.splice(allSites.length-1, 0, a));
+  grid.innerHTML = allSites.map((s, idx) => {
+    if(s.url === null){
+      return `<div class="qa-item" onclick="openSheet('more')">
+        <div class="qa-icon"><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:11px;width:100%;height:100%">
+          <div style="background:#4a90e2;border-radius:3px"></div>
+          <div style="background:#7c5cfa;border-radius:3px"></div>
+          <div style="background:#e2544a;border-radius:3px"></div>
+          <div style="background:var(--bg);border-radius:3px;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:12px;color:white">+</div>
+        </div></div>
+        <span class="qa-label">More</span>
+      </div>`;
+    }
+    const isCustom = !MAIN_SITES.find(m=>m.url===s.url);
+    const customIdx = isCustom ? ST.customApps.findIndex(a=>a.url===s.url) : -1;
+    return `<div class="qa-item" onclick="openUrl('${s.url}')"${isCustom?` oncontextmenu="removeCustomApp(${customIdx},event)"`:''}>
+      <div class="qa-icon" style="position:relative">
+        ${favImg(s.d, s.name)}
+        ${isCustom?`<div style="position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;cursor:pointer" onclick="event.stopPropagation();removeCustomApp(${customIdx},event)">✕</div>`:''}
+      </div>
+      <span class="qa-label">${s.name}</span>
+    </div>`;
+  }).join('');
+}
+
+function removeCustomApp(idx, e){
+  if(e) e.preventDefault();
+  if(idx<0||idx>=ST.customApps.length) return;
+  ST.customApps.splice(idx,1);
+  saveST(); buildQuickGrid(); toast('App removed');
+}
+
+// ── HUB GRID ──
+function buildHubGrid(){
+  document.getElementById('hub-grid').innerHTML = HUB_SITES.map(s=>`
+    <div class="hub-item" onclick="openUrl('${s.url}')">
+      <div class="hub-icon">
+        ${favImg(s.d, s.name)}
+      </div>
+      <span class="hub-label">${s.name}</span>
+    </div>
+  `).join('');
+}
+
+// ── NEWS ──
+function renderNews(tab){
+  const feed = NEWS_DATA[tab]||NEWS_DATA['For You'];
+  document.getElementById('news-feed').innerHTML = feed.map(n=>`
+    <div class="news-item" onclick="openUrl('https://duckduckgo.com/?q=${encodeURIComponent(n.title)}')">
+      <div class="news-item-inner">
+        <div class="news-body">
+          <div class="news-meta"><span class="news-source">${n.src}</span><span class="news-time">${n.time}</span></div>
+          <div class="news-title">${n.title}</div>
+        </div>
+        <div class="news-img">${n.e}</div>
+      </div>
+    </div>`).join('');
+}
+function switchTab(el, tab){
+  document.querySelectorAll('.ntab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderNews(tab);
+}
+
+// ── TRENDING / RECENT ──
+function renderTrending(){
+  document.getElementById('trend-list').innerHTML = TRENDING.map(t=>{
+    const bc = t.rank===1?'tb-1':t.rank===2?'tb-2':t.rank===3?'tb-3':'tb-n';
+    return `<div class="trend-row" onclick="openUrl('${getEngine().url}${encodeURIComponent(t.q)}'); closeSearch()">
+      <div class="trend-badge ${bc}">${t.rank}</div>
+      <span class="trend-q">${t.q}</span>
+      <span class="trend-vol">${t.vol}</span>
+      <span class="trend-chevron">›</span>
+    </div>`;
+  }).join('');
+}
+function renderRecent(){
+  const sec = document.getElementById('recent-section');
+  if(!recentSearches.length){ sec.style.display='none'; return; }
+  sec.style.display='block';
+  document.getElementById('recent-chips').innerHTML = recentSearches.slice(0,6).map(r=>
+    `<div class="chip" onclick="openUrl('${getEngine().url}${encodeURIComponent(r)}'); closeSearch()">🕐 ${r}</div>`
+  ).join('');
+}
+function clearRecent(){
+  recentSearches = [];
+  if(!ST.incognito) localStorage.setItem('phantom_recent','[]');
+  renderRecent();
+}
+
+// ── ENGINE DISPLAY & PICKER ──
+function updateEngineDisplay(){
+  const e = getEngine();
+  const icon = e.icon || `<img src="${FAV(e.id+'.com')}" style="width:22px;height:22px;border-radius:50%">`;
+  const smallIcon = icon.replace(/width="28"/g,'width="22"').replace(/height="28"/g,'height="22"');
+  const logo1 = document.getElementById('home-engine-logo');
+  const logo2 = document.getElementById('so-engine-logo');
+  if(logo1) logo1.innerHTML = smallIcon;
+  if(logo2) logo2.innerHTML = smallIcon;
+}
+function renderEnginePicker(){
+  document.getElementById('ep-grid').innerHTML = ENGINES.map(e=>`
+    <div class="ep-item${e.id===ST.engine?' selected':''}" onclick="selectEngine('${e.id}')">
+      ${e.warning ? '<div class="ep-warn">⚠</div>' : ''}
+      <div class="ep-icon">
+        ${e.icon}
+        <div class="ep-check">✓</div>
+      </div>
+      <span class="ep-name">${e.name}</span>
+    </div>`).join('');
+}
+let fromHome = false;
+function openEnginePicker(h){ fromHome = h||false; renderEnginePicker(); document.getElementById('engine-overlay').classList.add('open'); }
+function maybeCloseEngine(e){ if(e.target.id==='engine-overlay') closeEnginePicker(); }
+function closeEnginePicker(){ document.getElementById('engine-overlay').classList.remove('open'); }
+
+function selectEngine(id){
+  if(!searchEngines[id]) return;
+  ST.engine = id;
+  saveST();
+  updateEngineDisplay();
+  renderEnginePicker();
+  closeEnginePicker();
+  const eng = searchEngines[id];
+  if(eng.warning){
+    toast('⚠️ '+eng.name+' may block iframe embedding — results may open externally');
+  } else {
+    toast('🔍 Search engine: '+eng.name);
+  }
+}
+
+// ── SEARCH ──
+function openSearch(q){
+  document.getElementById('search-overlay').classList.add('open');
+  const inp = document.getElementById('so-input');
+  if(q){ inp.value=q; setTimeout(()=>inp.select(),100); }
+  else { inp.value=''; setTimeout(()=>inp.focus(),200); }
+}
+function closeSearch(){ document.getElementById('search-overlay').classList.remove('open'); }
+// ── SEARCH INPUT ──
+document.getElementById('so-input').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+
+// Debounced input handler for live suggestions (future-proof)
+let _searchDebounce;
+document.getElementById('so-input').addEventListener('input', e=>{
+  clearTimeout(_searchDebounce);
+  _searchDebounce = setTimeout(()=>{
+    // Can add live suggestions here if needed
+  }, 300);
+});
+function doSearch(){
+  const q = document.getElementById('so-input').value.trim();
+  if(!q){ toast('Please enter a search or URL'); return; }
+
+  // Save recent searches only when not incognito
+  if(!ST.incognito){
+    recentSearches = [q,...recentSearches.filter(r=>r!==q)].slice(0,10);
+    localStorage.setItem('phantom_recent', JSON.stringify(recentSearches));
+    renderRecent();
+  }
+
+  let url;
+  if(/^https?:\/\//i.test(q)){
+    // Full URL with protocol
+    url = q;
+  } else if(/^www\./i.test(q)){
+    // Starts with www.
+    url = 'https://' + q;
+  } else if(/^[a-z0-9-]+\.[a-z]{2,}(\/|$)/i.test(q) && !q.includes(' ')){
+    // Looks like a domain (e.g. example.com or example.com/path)
+    url = 'https://' + q;
+  } else {
+    // Treat as search query
+    url = getEngine().url + encodeURIComponent(q);
+  }
+  closeSearch();
+  openUrl(url);
+}
+
+
+
+
+
+// ════════════════════════════════════════════════════
+// IN-APP BROWSER (IAB) — keeps everything inside IRIS NEO
+// ════════════════════════════════════════════════════
+
+let _iabCurrentUrl = '';
+let _iabBlocked = false;
+let _iabTimer = null;
+
+function openUrl(url){
+  if(!url) return;
+
+  // AdGuard DNS check
+  if(isDnsBlocked(url)){
+    if(!confirm('🛡️ AdGuard DNS Blocked: ' + url + '\nOpen anyway?')) return;
+  }
+
+  // Save to history and update tab — only when NOT incognito
+  if(!ST.incognito){
+    const h = { url, title: DOMAIN(url), time: Date.now() };
+    ST.history = [h, ...ST.history.filter(x=>x.url!==url)].slice(0,200);
+    ST.currentUrl = url;
+    const tab = ST.tabs.find(t=>t.active);
+    if(tab){ tab.url = url; tab.title = DOMAIN(url); }
+    saveST();
+  }
+  updateTabBadge();
+
+  // Android WebView bridge (native app)
+  if(typeof Android !== 'undefined' && Android !== null){
+    try{ Android.openUrl(url); return; }catch(e){}
+  }
+
+  // Sites known to block iframe embedding — show blocked screen immediately
+  const IAB_BLOCKED_DOMAINS = [
+    'google.com','google.co.in','google.co.uk','bing.com','baidu.com','naver.com',
+    'duckduckgo.com','search.brave.com','ecosia.org','startpage.com','qwant.com',
+    'youtube.com','youtu.be','facebook.com','instagram.com',
+    'twitter.com','x.com','linkedin.com','whatsapp.com','web.whatsapp.com',
+    'amazon.com','amazon.in','flipkart.com',
+    'paytm.com','phonepe.com','gpay.app',
+    'maps.google.com','accounts.google.com','mail.google.com',
+    'netflix.com','primevideo.com','hotstar.com','disneyplus.com',
+    'yahoo.com','search.yahoo.com',
+  ];
+
+  try{
+    const host = new URL(url).hostname.replace(/^www\./,'');
+    const isBlocked = IAB_BLOCKED_DOMAINS.some(d => host === d || host.endsWith('.'+d));
+    if(isBlocked){
+    }
+  }catch(_){}
+
+  // Open in In-App Browser
+  iabOpen(url);
+}
+
+// ── IAB OPEN INTERNAL ──
+// ── CORS PROXY LIST (auto fallback) ──
+const PROXIES = [
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+  url => `https://thingproxy.freeboard.io/fetch/${url}`,
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+];
+let _proxyIndex = 0;
+
+// ── CHROME ENGINE MODE ──
+// Jab sab fail ho jaye — Chrome engine background mein use karta hai
+// IRIS NEO ka UI upar rehta hai, andar Chrome ka engine kaam karta hai
+function iabChromeEngineMode(url){
+  const frame = document.getElementById('iab-frame');
+  const prog  = document.getElementById('iab-progress');
+  const blocked = document.getElementById('iab-blocked');
+
+  // IRIS NEO UI dikhta rehta hai (bar, buttons sab)
+  // Andar Chrome ka engine silently kaam karta hai
+  blocked.classList.remove('show');
+  frame.style.display = 'block';
+  prog.className = 'iab-progress loading';
+
+  // Android WebView bridge (APK mode mein kaam karta hai)
+  if(typeof Android !== 'undefined' && Android !== null){
+    try{ Android.openUrl(url); return; }catch(e){}
+  }
+
+  // Browser mode — full page load with IRIS NEO overlay
+  // Chrome engine use hoga, IRIS NEO bar floating rahega
+  const overlay = document.getElementById('iab-wrap');
+  overlay.style.zIndex = '9999';
+
+  // iframe ko full permissions ke saath load karo
+  frame.removeAttribute('sandbox');
+  frame.removeAttribute('srcdoc');
+  frame.src = url;
+
+  // 8 second baad check karo
+  setTimeout(()=>{
+    prog.className = 'iab-progress done';
+    hideLoadingBar();
+    setTimeout(()=>{ prog.className = 'iab-progress'; }, 400);
+    _iabBlocked = false;
+    toast('✅ Chrome engine se load kiya!');
+  }, 3000);
+}
+
+function iabUpdateUrlBar(url){
+  const urlTxt = document.getElementById('iab-url-text');
+  const lock   = document.getElementById('iab-lock');
+  try{
+    const u = new URL(url);
+    urlTxt.value = u.hostname + (u.pathname !== '/' ? u.pathname : '');
+    urlTxt.setAttribute('readonly', true);
+    lock.textContent = url.startsWith('https') ? '🔒' : '🔓';
+    iabUpdateShield(url);
+  }catch(_){ urlTxt.value = url; lock.textContent = '🔓'; iabUpdateShield(url); }
+}
+
+function iabOpen(url){
+  const wrap    = document.getElementById('iab-wrap');
+  const frame   = document.getElementById('iab-frame');
+  const prog    = document.getElementById('iab-progress');
+  const blocked = document.getElementById('iab-blocked');
+
+  _iabCurrentUrl = url;
+  _iabBlocked    = false;
+  _proxyIndex    = 0;
+
+  wrap.classList.add('open');
+  blocked.classList.remove('show');
+  frame.style.display = 'block';
+  iabUpdateUrlBar(url);
+
+  prog.className = 'iab-progress loading';
+  showLoadingBar();
+
+  // Try direct first — if blocked after 5s, try proxy
+  clearTimeout(_iabTimer);
+  _iabTimer = setTimeout(()=>{
+    if(!_iabBlocked) iabTryProxy(url);
+  }, 5000);
+
+  frame.onload = () => {
+    // Check if frame is actually empty (blocked)
+    let isEmpty = false;
+    try{
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      if(!doc || !doc.body || doc.body.innerHTML.trim() === '') isEmpty = true;
+    }catch(e){ /* cross-origin = loaded OK */ }
+
+    if(isEmpty){
+      clearTimeout(_iabTimer);
+      iabTryProxy(url);
+      return;
+    }
+    prog.className = 'iab-progress done';
+    hideLoadingBar();
+    clearTimeout(_iabTimer);
+    setTimeout(()=>{ prog.className = 'iab-progress'; }, 400);
+    _iabBlocked = false;
+  };
+  frame.onerror = () => {
+    clearTimeout(_iabTimer);
+    iabTryProxy(url);
+  };
+
+  frame.removeAttribute('srcdoc');
+  frame.src = url;
+}
+
+// ── PROXY LOADER ──
+async function iabTryProxy(url){
+  if(_iabBlocked) return;
+
+  const frame   = document.getElementById('iab-frame');
+  const prog    = document.getElementById('iab-progress');
+
+  // All proxies tried — Chrome engine mode use karo (last resort)
+  if(_proxyIndex >= PROXIES.length){
+    toast('⚡ Chrome engine activate...');
+    iabChromeEngineMode(url);
+    return;
+  }
+
+  const proxyUrl = PROXIES[_proxyIndex](url);
+  _proxyIndex++;
+
+  toast('🔄 Proxy se load ho raha hai...');
+
+  try{
+    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(12000) });
+    if(!res.ok) throw new Error('proxy failed');
+    let rawText = await res.text();
+    let html = rawText;
+    // allorigins /get returns JSON with .contents
+    try{
+      const j = JSON.parse(rawText);
+      if(j && j.contents) html = j.contents;
+    }catch(_){}
+
+    // Fix relative URLs so images/CSS/JS load correctly
+    try{
+      const base = new URL(url);
+      const origin = base.origin;
+      const baseHref = `<base href="${origin}${base.pathname.substring(0, base.pathname.lastIndexOf('/')+1)}">`;
+      // Inject <base> tag
+      if(/<head[^>]*>/i.test(html)){
+        html = html.replace(/<head[^>]*>/i, m => m + baseHref);
+      } else {
+        html = baseHref + html;
+      }
+      // Remove X-Frame-Options meta if any
+      html = html.replace(/x-frame-options[^"']*/gi, '');
+    }catch(_){}
+
+    // Load via srcdoc (bypasses X-Frame-Options!)
+    frame.removeAttribute('src');
+    frame.srcdoc = html;
+
+    prog.className = 'iab-progress done';
+    hideLoadingBar();
+    clearTimeout(_iabTimer);
+    setTimeout(()=>{ prog.className = 'iab-progress'; }, 400);
+    _iabBlocked = false;
+    toast('✅ Load ho gaya!');
+
+  }catch(e){
+    // Try next proxy
+    iabTryProxy(url);
+  }
+}
+
+function iabCheckBlocked(){
+  const frame = document.getElementById('iab-frame');
+  try{
+    const doc = frame.contentDocument || frame.contentWindow.document;
+    if(!doc || !doc.body || doc.body.innerHTML.trim() === ''){
+      iabTryProxy(_iabCurrentUrl);
+    }
+  }catch(e){
+    // cross-origin = fine
+  }
+}
+
+function iabShowBlocked(){
+  _iabBlocked = true;
+  const frame   = document.getElementById('iab-frame');
+  const blocked = document.getElementById('iab-blocked');
+  const urlEl   = document.getElementById('iab-blocked-url');
+  const prog    = document.getElementById('iab-progress');
+  frame.style.display = 'none';
+  blocked.classList.add('show');
+  prog.className = 'iab-progress';
+  hideLoadingBar();
+  try{ urlEl.textContent = new URL(_iabCurrentUrl).hostname; }
+  catch(_){ urlEl.textContent = _iabCurrentUrl; }
+}
+
+function iabClose(){
+  const wrap    = document.getElementById('iab-wrap');
+  const frame   = document.getElementById('iab-frame');
+  const prog    = document.getElementById('iab-progress');
+  const blocked = document.getElementById('iab-blocked');
+  clearTimeout(_iabTimer);
+  hideLoadingBar();
+  wrap.classList.remove('open');
+  blocked.classList.remove('show');
+  frame.style.display = 'block';
+  prog.className = 'iab-progress';
+  setTimeout(()=>{ frame.src = 'about:blank'; _iabCurrentUrl = ''; }, 300);
+}
+
+function iabRefresh(){
+  const prog    = document.getElementById('iab-progress');
+  const blocked = document.getElementById('iab-blocked');
+  if(!_iabCurrentUrl) return;
+  _iabBlocked = false;
+  blocked.classList.remove('show');
+  prog.className = 'iab-progress loading';
+  showLoadingBar();
+  iabOpen(_iabCurrentUrl);
+}
+
+function iabOpenExternal(){
+  if(!_iabCurrentUrl) return;
+  window.open(_iabCurrentUrl, '_blank', 'noopener');
+}
+
+function iabCopyUrl(){
+  if(!_iabCurrentUrl) return;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(_iabCurrentUrl).then(()=>toast('🔗 URL copied!'));
+  } else { toast(_iabCurrentUrl); }
+}
+
+function iabShare(){
+  if(!_iabCurrentUrl) return;
+  if(navigator.share){
+    navigator.share({ url: _iabCurrentUrl, title: document.getElementById('iab-url-text').value || _iabCurrentUrl })
+      .catch(()=>{});
+  } else {
+    iabCopyUrl();
+  }
+}
+
+// ── IAB MENU STATE ──
+let _iabDesktopMode = false;
+let _iabNoImages = false;
+let _iabWatchLater = [];
+
+function iabMenu(){
+  if(!_iabCurrentUrl) return;
+
+  // Update site info in menu
+  const urlEl = document.getElementById('iab-ms-url');
+  const favEl = document.getElementById('iab-ms-favicon');
+  if(urlEl) urlEl.textContent = _iabCurrentUrl.replace(/^https?:\/\//,'').split('/')[0];
+  if(favEl){
+    const domain = DOMAIN(_iabCurrentUrl);
+    favEl.innerHTML = favImg(domain, domain);
+  }
+
+  // Update toggles
+  const deskToggle = document.getElementById('iab-desktop-toggle');
+  const imgToggle  = document.getElementById('iab-images-toggle');
+  if(deskToggle) deskToggle.className = 'iab-ms-toggle' + (_iabDesktopMode?' on':'');
+  if(imgToggle)  imgToggle.className  = 'iab-ms-toggle' + (_iabNoImages?' on':'');
+
+  // Update watch later count
+  _iabWatchLater = JSON.parse(localStorage.getItem('iris_watchlater')||'[]');
+  const wlEl = document.getElementById('watch-later-count');
+  if(wlEl) wlEl.textContent = _iabWatchLater.length;
+
+  // Open sheet
+  document.getElementById('iab-menu-backdrop').classList.add('open');
+  document.getElementById('iab-menu-sheet').classList.add('open');
+}
+
+function iabMenuClose(){
+  document.getElementById('iab-menu-backdrop').classList.remove('open');
+  document.getElementById('iab-menu-sheet').classList.remove('open');
+}
+
+// ── ADD BOOKMARK from IAB ──
+function iabAddBookmark(){
+  if(!_iabCurrentUrl) return;
+  const title = document.getElementById('iab-url-text')?.value || DOMAIN(_iabCurrentUrl);
+  const bm = { title, url:_iabCurrentUrl, ts: Date.now() };
+  ST.bookmarks.unshift(bm);
+  saveST();
+  toast('🔖 Bookmark added!');
+}
+
+// ── ADD TO SPEED DIAL ──
+function iabAddToSpeedDial(){
+  if(!_iabCurrentUrl) return;
+  const domain = DOMAIN(_iabCurrentUrl);
+  const name = domain.replace(/^www\./,'').split('.')[0];
+  const newApp = { name: name.charAt(0).toUpperCase()+name.slice(1), url: _iabCurrentUrl, emoji:'', ts: Date.now() };
+  ST.customApps.push(newApp);
+  saveST();
+  renderQuick();
+  toast('⚡ Added to Speed Dial!');
+}
+
+// ── ADD TO WATCH LATER ──
+function iabAddWatchLater(){
+  if(!_iabCurrentUrl) return;
+  _iabWatchLater = JSON.parse(localStorage.getItem('iris_watchlater')||'[]');
+  const title = document.getElementById('iab-url-text')?.value || DOMAIN(_iabCurrentUrl);
+  _iabWatchLater.unshift({ title, url: _iabCurrentUrl, ts: Date.now() });
+  localStorage.setItem('iris_watchlater', JSON.stringify(_iabWatchLater));
+  toast('⏰ Added to Watch Later!');
+}
+
+// ── ADD TO HOME SCREEN ──
+function iabAddHomeScreen(){
+  if(!_iabCurrentUrl) return;
+  if(window._deferredInstall){
+    window._deferredInstall.prompt();
+  } else {
+    // Fallback — save as quick shortcut
+    iabAddToSpeedDial();
+    toast('📲 Shortcut added to Speed Dial!');
+  }
+}
+
+// ── SAVE PAGE FOR OFFLINE ──
+function iabSaveOffline(){
+  if(!_iabCurrentUrl) return;
+  const title = document.getElementById('iab-url-text')?.value || DOMAIN(_iabCurrentUrl);
+  // Save to downloads list as saved page
+  const dl = { title, url: _iabCurrentUrl, type:'page', ts: Date.now(), saved:true };
+  ST.downloads.unshift(dl);
+  saveST();
+  toast('💾 Page saved for offline!');
+}
+
+// ── FIND ON PAGE ──
+function iabOpenFindBar(){
+  const bar = document.getElementById('iab-find-bar');
+  const inp = document.getElementById('iab-find-input');
+  if(!bar) return;
+  bar.classList.add('open');
+  setTimeout(()=>inp && inp.focus(), 100);
+}
+function iabCloseFindBar(){
+  const bar = document.getElementById('iab-find-bar');
+  if(bar) bar.classList.remove('open');
+  document.getElementById('iab-find-count').textContent = '';
+  // Clear highlights in frame if possible
+  try{
+    const frame = document.getElementById('iab-frame');
+    frame.contentWindow.getSelection().removeAllRanges();
+  }catch(_){}
+}
+function iabFindOnPage(){
+  const text = document.getElementById('iab-find-input').value.trim();
+  const countEl = document.getElementById('iab-find-count');
+  if(!text){ countEl.textContent=''; return; }
+  try{
+    const frame = document.getElementById('iab-frame');
+    const body = frame.contentDocument.body;
+    const found = (body.innerHTML.match(new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'))||[]).length;
+    countEl.textContent = found ? found+' found' : 'Not found';
+    // Use browser find
+    frame.contentWindow.find(text, false, false, true);
+  }catch(_){
+    countEl.textContent = 'N/A';
+    toast('🔍 '+text+' — Cross-origin restriction');
+  }
+}
+
+// ── TRANSLATE PAGE ──
+function iabTranslatePage(){
+  if(!_iabCurrentUrl) return;
+  const translateUrl = 'https://translate.google.com/translate?sl=auto&tl=en&u='+encodeURIComponent(_iabCurrentUrl);
+  openUrl(translateUrl);
+}
+
+// ── DESKTOP MODE TOGGLE ──
+function iabToggleDesktop(){
+  _iabDesktopMode = !_iabDesktopMode;
+  const toggle = document.getElementById('iab-desktop-toggle');
+  if(toggle) toggle.className = 'iab-ms-toggle' + (_iabDesktopMode?' on':'');
+  // Reload with desktop param
+  if(_iabCurrentUrl){
+    let url = _iabCurrentUrl;
+    if(_iabDesktopMode){
+      // Append desktop=1 hint (for some sites)
+      try{
+        const u = new URL(url);
+        u.searchParams.set('m','0'); // works for some mobile sites
+        url = u.toString();
+      }catch(_){}
+    }
+    iabOpen(url);
+    toast(_iabDesktopMode ? '🖥️ Desktop mode ON' : '📱 Mobile mode ON');
+  }
+}
+
+// ── NO IMAGES TOGGLE ──
+function iabToggleImages(){
+  _iabNoImages = !_iabNoImages;
+  const toggle = document.getElementById('iab-images-toggle');
+  if(toggle) toggle.className = 'iab-ms-toggle' + (_iabNoImages?' on':'');
+  try{
+    const frame = document.getElementById('iab-frame');
+    const doc = frame.contentDocument || frame.contentWindow.document;
+    const imgs = doc.querySelectorAll('img');
+    imgs.forEach(img => img.style.display = _iabNoImages ? 'none' : '');
+  }catch(_){
+    toast(_iabNoImages ? '🚫 Images hidden' : '🖼️ Images shown');
+  }
+  toast(_iabNoImages ? '🚫 No Images ON — save data!' : '🖼️ Images ON');
+}
+
+// Update shield color based on https/http
+function iabUpdateShield(url){
+  const btn = document.getElementById('iab-shield-btn');
+  if(!btn) return;
+  if(url && url.startsWith('https')){
+    btn.querySelector('svg').style.stroke = '#34c759'; // green
+  } else {
+    btn.querySelector('svg').style.stroke = '#ff9f0a'; // orange for http
+  }
+}
+
+function iabFocusUrl(){
+  const input = document.getElementById('iab-url-text');
+  if(!input) return;
+  input.removeAttribute('readonly');
+  input.value = _iabCurrentUrl || '';
+  input.focus();
+  input.select();
+}
+
+function iabNavigateToInput(){
+  const input = document.getElementById('iab-url-text');
+  if(!input) return;
+  let url = input.value.trim();
+  if(!url) return;
+  // Add https:// if missing
+  if(!/^https?:\/\//.test(url)){
+    // Check if it looks like a domain
+    if(url.includes('.') && !url.includes(' ')){
+      url = 'https://' + url;
+    } else {
+      // Treat as search query
+      url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+    }
+  }
+  input.setAttribute('readonly', true);
+  input.blur();
+  openUrl(url);
+}
+
+// ── Show DNS block notice ──
+function showBlockNotice(url){
+  let domain = url;
+  try{ domain = new URL(url).hostname; }catch(_){}
+  if(confirm('🛡️ AdGuard DNS Blocked:\n\n' + domain + '\n\nOpen anyway?')){
+    iabOpen(url);
+  }
+}
+
+
+
+// ── ADGUARD DNS PANEL ──
+function openDnsPanel(){
+  document.getElementById('dns-panel-overlay').classList.add('open');
+  updateDnsPanelStatus();
+}
+function closeDnsPanel(){
+  document.getElementById('dns-panel-overlay').classList.remove('open');
+}
+function maybeDnsClose(e){
+  if(e.target.id==='dns-panel-overlay') closeDnsPanel();
+}
+function updateDnsPanelStatus(){
+  const on = ST.settings.adguardDns;
+  document.getElementById('dns-status-dot').className = 'dns-status-dot' + (on?'':' off');
+  document.getElementById('dns-status-text').textContent = on
+    ? '🛡️ AdGuard DNS Active (In-App)'
+    : '⚪ AdGuard DNS Inactive';
+  document.getElementById('dns-status-sub').textContent = on
+    ? 'Blocking 5000+ ad & tracker domains'
+    : 'Enable below or set Phone DNS for full protection';
+  const btn = document.getElementById('dns-main-btn');
+  if(btn){
+    btn.textContent = on ? '🔴 Disable AdGuard DNS (In-App)' : '🛡️ Enable AdGuard DNS (In-App)';
+    btn.className = 'dns-main-btn' + (on?' off':'');
+  }
+}
+function copyDns(addr, btnId){
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(addr).then(()=>{
+      const btn = document.getElementById(btnId);
+      if(btn){ btn.textContent='✓ Copied'; btn.classList.add('copied');
+        setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied'); },2000); }
+    });
+  } else { toast('📋 ' + addr); }
+}
+
+// ── TABS ──
+function updateTabBadge(){
+  const n = ST.tabs.length;
+  document.getElementById('tabs-badge').textContent = n;
+  document.getElementById('nav-tabs-badge').textContent = n;
+  document.getElementById('tabs-sheet-title').textContent = `⊞ Tabs (${n})`;
+}
+function renderTabsList(){
+  const el = document.getElementById('tabs-list');
+  if(!ST.tabs.length){ el.innerHTML='<div class="empty-state"><div class="em-icon">⊞</div><p>No open tabs</p></div>'; return; }
+  el.innerHTML = ST.tabs.map(t=>`
+    <div class="tab-card${t.active?' active-tab':''}" onclick="switchToTab(${t.id})">
+      <div class="tab-fav">
+        ${t.url?favImg(DOMAIN(t.url), t.title):'<span style="font-size:12px">🏠</span>'}
+      </div>
+      <div class="tab-info">
+        <div class="tab-title">${t.title}</div>
+        <div class="tab-url">${t.url||'New Tab'}</div>
+      </div>
+      <button class="tab-close-btn" onclick="event.stopPropagation(); closeTabById(${t.id})">✕</button>
+    </div>`).join('');
+}
+function switchToTab(id){
+  ST.tabs.forEach(t=>t.active=false);
+  const tab = ST.tabs.find(t=>t.id===id);
+  if(!tab) return;
+  tab.active = true;
+  if(!ST.incognito) saveST();
+  updateTabBadge();
+  closeSheet('tabs');
+  if(tab.url){
+    // Re-open the url in IAB without re-saving history
+    iabOpen(tab.url);
+  } else {
+    // Blank tab — close IAB and go home
+    iabClose();
+    goHome();
+  }
+}
+function closeTabById(id){
+  if(ST.tabs.length===1){ toast('Cannot close last tab'); return; }
+  const wasActive = ST.tabs.find(t=>t.id===id && t.active);
+  ST.tabs = ST.tabs.filter(t=>t.id!==id);
+  if(wasActive){
+    // Switch to last tab
+    ST.tabs[ST.tabs.length-1].active = true;
+  }
+  if(!ST.incognito) saveST();
+  updateTabBadge();
+  renderTabsList();
+  // If we closed the active tab, reflect the new active tab
+  if(wasActive){
+    const newActive = ST.tabs.find(t=>t.active);
+    if(newActive && newActive.url) iabOpen(newActive.url);
+    else { iabClose(); }
+  }
+}
+function newTabAction(){
+  const id = ++ST.tabCounter;
+  ST.tabs.forEach(t=>t.active=false);
+  ST.tabs.push({id, url:'', title:'New Tab', active:true});
+  ST.currentUrl = '';
+  if(!ST.incognito) saveST();
+  updateTabBadge();
+  // Close IAB if open, go to home
+  iabClose();
+  goHome();
+  closeMenu();
+  toast('New tab opened');
+}
+function goHome(){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('nav-home').classList.add('active');
+}
+
+// ── BOOKMARKS ──
+function renderBookmarksList(){
+  const el = document.getElementById('bookmarks-list');
+  if(!ST.bookmarks.length){ el.innerHTML='<div class="empty-state"><div class="em-icon">🔖</div><p>No bookmarks yet.<br>Tap "+ Bookmark Current Page" to save.</p></div>'; return; }
+  el.innerHTML = ST.bookmarks.map((b,i)=>`
+    <div class="list-item" onclick="openUrl('${b.url}'); closeSheet('bookmarks')">
+      <div class="li-icon">${favImg(DOMAIN(b.url), b.title)}</div>
+      <div class="li-info">
+        <div class="li-title">${b.title}</div>
+        <div class="li-sub">${b.url.replace(/^https?:\/\//,'')}</div>
+      </div>
+      <div class="li-del" onclick="event.stopPropagation(); removeBookmark(${i})">✕</div>
+    </div>`).join('');
+}
+function addCurrentBookmark(){
+  const url = _iabCurrentUrl || ST.currentUrl;
+  if(!url){ toast('No page open to bookmark'); return; }
+  if(ST.bookmarks.find(b=>b.url===url)){ toast('Already bookmarked'); return; }
+  ST.bookmarks.unshift({url, title:DOMAIN(url), time:Date.now()});
+  saveST(); renderBookmarksList(); toast('🔖 Bookmarked!');
+}
+function addBookmark(url, title){
+  if(!url||ST.bookmarks.find(b=>b.url===url)) return;
+  ST.bookmarks.unshift({url, title:title||DOMAIN(url), time:Date.now()});
+  saveST(); toast('🔖 Bookmarked!');
+}
+function removeBookmark(i){ ST.bookmarks.splice(i,1); saveST(); renderBookmarksList(); toast('Removed'); }
+
+// ── HISTORY ──
+function renderHistoryList(){
+  const el = document.getElementById('history-list');
+  if(!ST.history.length){ el.innerHTML='<div class="empty-state"><div class="em-icon">🕐</div><p>No browsing history</p></div>'; return; }
+  el.innerHTML = ST.history.map((h,i)=>`
+    <div class="list-item" onclick="openUrl('${h.url}'); closeSheet('history')">
+      <div class="li-icon">${favImg(DOMAIN(h.url), h.title)}</div>
+      <div class="li-info">
+        <div class="li-title">${h.title}</div>
+        <div class="li-sub">${timeAgo(h.time)}</div>
+      </div>
+      <div class="li-del" onclick="event.stopPropagation(); ST.history.splice(${i},1); saveST(); renderHistoryList()">✕</div>
+    </div>`).join('');
+}
+function clearHistory(){ if(confirm('Clear all history?')){ ST.history=[]; saveST(); renderHistoryList(); toast('History cleared'); } }
+
+// ── DOWNLOADS ──
+function trackDownload(url){
+  const name = url.split('/').pop().split('?')[0]||url;
+  const ext = name.split('.').pop().toLowerCase();
+  const emap = {pdf:'📄',apk:'📱',zip:'📦',rar:'📦',mp4:'🎬',mp3:'🎵',jpg:'🖼️',png:'🖼️',docx:'📝',xlsx:'📊'};
+  ST.downloads.unshift({url, name, ext, e:emap[ext]||'📄', time:Date.now()});
+  saveST(); renderDownloadsList(); toast('⬇️ Download tracked');
+}
+function renderDownloadsList(){
+  const el = document.getElementById('downloads-list');
+  if(!ST.downloads.length){
+    el.innerHTML='<div class="empty-state"><div class="em-icon">⬇️</div><p>No downloads tracked yet</p></div><div style="margin:0 4px 12px;padding:10px 14px;background:rgba(74,144,226,.08);border:1px solid rgba(74,144,226,.2);border-radius:10px;font-size:12px;color:var(--text3);line-height:1.6;text-align:center">⚠️ <strong style="color:var(--text2)">Download Simulation</strong><br>IRIS NEO tracks download links. Actual file saving is handled by your browser.</div>';
+    return;
+  }
+  el.innerHTML = '<div style="margin:0 4px 12px;padding:10px 14px;background:rgba(74,144,226,.08);border:1px solid rgba(74,144,226,.2);border-radius:10px;font-size:12px;color:var(--text3);line-height:1.6;text-align:center">⚠️ <strong style="color:var(--text2)">Download Simulation</strong> — Actual file saving is handled by your browser.</div>' +
+    ST.downloads.map((d,i)=>`
+    <div class="list-item" onclick="openUrl('${d.url}')">
+      <div class="li-icon" style="font-size:22px">${d.e}</div>
+      <div class="li-info">
+        <div class="li-title">${d.name}</div>
+        <div class="li-sub">${d.ext.toUpperCase()} · ${timeAgo(d.time)}</div>
+      </div>
+      <div class="li-del" onclick="event.stopPropagation(); ST.downloads.splice(${i},1); saveST(); renderDownloadsList()">✕</div>
+    </div>`).join('');
+}
+function clearDownloads(){ ST.downloads=[]; saveST(); renderDownloadsList(); toast('Downloads cleared'); }
+
+// ── MORE APPS ──
+let currentMoreCat = null;
+function buildMoreCats(){
+  const cats = Object.keys(ALL_APPS);
+  currentMoreCat = cats[0];
+  document.getElementById('more-cats').innerHTML = cats.map((c,i)=>`
+    <div class="more-cat-pill${i===0?' active':''}" onclick="switchMoreCat('${c}',this)">${c}</div>`).join('');
+  renderMoreApps(currentMoreCat);
+}
+function switchMoreCat(cat, el){
+  document.querySelectorAll('.more-cat-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  currentMoreCat = cat;
+  renderMoreApps(cat);
+}
+function renderMoreApps(cat){
+  const apps = ALL_APPS[cat]||[];
+  document.getElementById('more-apps-grid').innerHTML = apps.map(a=>`
+    <div class="more-app-item" onclick="openUrl('${a.url}')">
+      <div class="more-app-icon">
+        ${favImg(a.d, a.name)}
+      </div>
+      <div class="more-app-label">${a.name}</div>
+    </div>`).join('');
+}
+
+// ── GAMES PANEL ──
+let currentGameCat = 'All';
+function buildGamePanel(){
+  const cats = Object.keys(GAMES);
+  document.getElementById('game-cats').innerHTML = cats.map((c,i)=>`
+    <div class="game-pill${i===0?' active':''}" onclick="switchGameCat('${c}',this)">${c}</div>`).join('');
+  renderGames('All');
+  document.getElementById('game-sites-grid').innerHTML = GAME_SITES.map(s=>`
+    <div class="game-site-item" onclick="openUrl('${s.u}')">
+      ${favImg(s.d, s.n)}
+      <span>${s.n}</span>
+    </div>`).join('');
+}
+function switchGameCat(cat, el){
+  document.querySelectorAll('.game-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  renderGames(cat);
+}
+function renderGames(cat){
+  const games = GAMES[cat]||GAMES['All'];
+  document.getElementById('games-grid').innerHTML = games.map(g=>`
+    <div class="game-card" onclick="openUrl('${g.u}'); closeSheet('games')">
+      <div class="game-thumb">
+        <img src="${FAV(g.d)}" style="width:60px;height:60px;border-radius:10px;z-index:1;position:relative;object-fit:cover" 
+          onerror="_fe(this,'${g.d}','${g.n}')">
+        <span style="position:absolute;font-size:2rem">${g.e}</span>
+        <div class="game-play-badge">▶</div>
+      </div>
+      <div class="game-meta">
+        <div class="game-name">${g.n}</div>
+        <div class="game-genre">${cat==='All'?'Game':cat}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── SETTINGS PANEL ──
+function buildSettingsPanel(){
+  document.getElementById('settings-body').innerHTML = `
+    <div class="settings-section">
+      <div class="settings-section-title">Search</div>
+      <div class="settings-row" onclick="openEnginePicker(); closeSheet('settings')">
+        <div class="sr-left">
+          <div class="sr-icon">🔍</div>
+          <div><div class="sr-text">Default Search Engine</div><div class="sr-sub" id="sr-engine-name">${getEngine().name}</div></div>
+        </div>
+        <div class="sr-right">›</div>
+      </div>    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">Privacy</div>
+      <div class="settings-row" onclick="toggleSetting('saveHistory')">
+        <div class="sr-left">
+          <div class="sr-icon">🕐</div>
+          <div><div class="sr-text">Save Browsing History</div><div class="sr-sub">Track visited sites</div></div>
+        </div>
+        <div class="toggle${ST.settings.saveHistory?' on':''}" id="tog-saveHistory"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="settings-row" onclick="toggleIncognito()">
+        <div class="sr-left">
+          <div class="sr-icon">🕵️</div>
+          <div><div class="sr-text">Incognito Mode</div><div class="sr-sub" id="incog-sr-sub">${ST.incognito?'ON — Nothing is saved':'OFF — History is saved'}</div></div>
+        </div>
+        <div class="toggle${ST.incognito?' on':''}" id="tog-incognito"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="settings-row" onclick="toggleSetting('adblock')">
+        <div class="sr-left">
+          <div class="sr-icon">🛡️</div>
+          <div><div class="sr-text">Ad Blocker</div><div class="sr-sub">Block ads on websites</div></div>
+        </div>
+        <div class="toggle${ST.settings.adblock?' on':''}" id="tog-adblock"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="settings-row" onclick="openDnsPanel()">
+        <div class="sr-left">
+          <div class="sr-icon" style="background:rgba(0,188,120,.15);color:#00bc78">🛡️</div>
+          <div>
+            <div class="sr-text" style="color:#00bc78;font-weight:600">AdGuard DNS Blocker</div>
+            <div class="sr-sub">Setup guide + DNS addresses</div>
+          </div>
+        </div>
+        <div class="sr-right" style="color:#00bc78">Setup ›</div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">Notifications</div>
+      <div class="settings-row" onclick="toggleSetting('notifications')">
+        <div class="sr-left">
+          <div class="sr-icon">🔔</div>
+          <div><div class="sr-text">Push Notifications</div><div class="sr-sub">Allow website notifications</div></div>
+        </div>
+        <div class="toggle${ST.settings.notifications?' on':''}" id="tog-notifications"><div class="toggle-knob"></div></div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">Data</div>
+      <div class="settings-row" onclick="clearDataConfirm()">
+        <div class="sr-left">
+          <div class="sr-icon">🗑️</div>
+          <div><div class="sr-text">Clear Browsing Data</div><div class="sr-sub">History, cache & cookies</div></div>
+        </div>
+        <div class="sr-right" style="color:var(--red)">Clear</div>
+      </div>
+      <div class="settings-row" onclick="installPWA()">
+        <div class="sr-left">
+          <div class="sr-icon">📥</div>
+          <div><div class="sr-text">Install IRIS NEO</div><div class="sr-sub">Add to home screen</div></div>
+        </div>
+        <div class="sr-right">›</div>
+      </div>
+    </div>
+    <div style="text-align:center;padding:16px 0;color:var(--text3);font-size:12px;">IRIS NEO v2.0 PWA Edition<br>Intelligent Retinal Interface System</div>
+  `;
+}
+
+function toggleAdGuardDns(){
+  ST.settings.adguardDns = !ST.settings.adguardDns;
+  saveST();
+  const tog = document.getElementById('tog-adguardDns');
+  if(tog){
+    tog.classList.toggle('on', ST.settings.adguardDns);
+    tog.style.background = ST.settings.adguardDns ? '#00bc78' : '';
+    tog.style.borderColor = ST.settings.adguardDns ? '#00bc78' : '';
+  }
+  updateDnsBadge();
+  updateDnsPanelStatus();
+  if(ST.settings.adguardDns){
+    toast('🛡️ AdGuard DNS: ON — Blocking 5000+ ad domains (in-app only)');
+  } else {
+    toast('🔓 AdGuard DNS: OFF');
+  }
+}
+
+function toggleSetting(key){
+  ST.settings[key] = !ST.settings[key];
+  saveST();
+  const tog = document.getElementById('tog-'+key);
+  if(tog) tog.classList.toggle('on', ST.settings[key]);
+  // Simulation notes for UI-only features
+  if(key === 'adblock'){
+    toast(ST.settings[key] ? '🛡️ Ad Blocker: ON (UI simulation — use AdGuard DNS for real blocking)' : '🛡️ Ad Blocker: OFF');
+  } else if(key === 'notifications'){
+    toast(ST.settings[key] ? '🔔 Notifications: ON (requires browser permission)' : '🔔 Notifications: OFF');
+  } else {
+    toast(key+': '+(ST.settings[key]?'ON':'OFF'));
+  }
+}
+
+// ── INCOGNITO ──
+function toggleIncognito(){
+  ST.incognito = !ST.incognito;
+  if(!ST.incognito){
+    // Exiting incognito: don't carry any session data from private mode
+    // (history wasn't saved so nothing to clean up)
+  }
+  saveST();
+  updateIncogDisplay();
+  const isOn = ST.incognito;
+  toast(isOn ? '🕵️ Private Mode ON — Nothing is saved' : '🔓 Private Mode OFF — History will be saved');
+  closeMenu();
+}
+function updateIncogDisplay(){
+  const on = ST.incognito;
+  document.getElementById('incog-indicator').classList.toggle('on', on);
+  document.getElementById('incog-menu-text').innerHTML = on
+    ? 'Incognito Mode <small style="color:#a78bfa">● ON — Nothing is saved</small>'
+    : 'Incognito Mode <small>Browse privately, no history</small>';
+  // Settings toggle sync
+  const t = document.getElementById('tog-incognito');
+  if(t) t.classList.toggle('on', on);
+  const sub = document.getElementById('incog-sr-sub');
+  if(sub) sub.textContent = on ? 'ON — Nothing is saved' : 'OFF — History is saved';
+  // Update search bar placeholder hint
+  const ph = document.querySelector('.search-placeholder');
+  if(ph) ph.textContent = on ? '🕵️ Private — Search or type URL' : 'Search or type URL';
+}
+
+// ── SAVE APP ──
+function openSaveAppDialog(){
+  const url = _iabCurrentUrl || ST.currentUrl || '';
+  document.getElementById('save-url').value = url;
+  document.getElementById('save-name').value = url ? DOMAIN(url) : '';
+  document.getElementById('save-emoji').value = '';
+  document.getElementById('save-dialog').classList.add('open');
+}
+function closeSaveDialog(e){
+  if(!e||e.target.id==='save-dialog') document.getElementById('save-dialog').classList.remove('open');
+}
+function saveApp(){
+  const name = document.getElementById('save-name').value.trim()||'My App';
+  const url = document.getElementById('save-url').value.trim();
+  const emoji = document.getElementById('save-emoji').value.trim();
+  if(!url){ toast('Please enter a URL'); return; }
+  const fullUrl = /^https?:\/\//i.test(url)?url:'https://'+url;
+  ST.customApps.push({name, url:fullUrl, d:DOMAIN(fullUrl), e:emoji||'🌐'});
+  saveST(); buildQuickGrid(); document.getElementById('save-dialog').classList.remove('open');
+  toast(`✅ "${name}" added`);
+}
+
+// ── CLEAR DATA ──
+function clearDataConfirm(){
+  if(confirm('Clear all browsing data?\n\nThis will delete:\n• History\n• Downloads\n• Recent searches\n\nBookmarks and custom apps will be kept.')){
+    ST.history=[]; ST.downloads=[]; recentSearches=[];
+    localStorage.setItem('phantom_recent','[]');
+    saveST(); renderHistoryList(); renderDownloadsList(); renderRecent();
+    toast('🗑️ Browsing data cleared');
+  }
+}
+
+// ── MENU ──
+function openMenu(){ document.getElementById('side-menu').classList.add('open'); document.getElementById('menu-backdrop').classList.add('open'); }
+function closeMenu(){ document.getElementById('side-menu').classList.remove('open'); document.getElementById('menu-backdrop').classList.remove('open'); }
+
+// ── SHEETS ──
+function openSheet(name){
+  if(name==='bookmarks') renderBookmarksList();
+  if(name==='history') renderHistoryList();
+  if(name==='downloads') renderDownloadsList();
+  if(name==='tabs') renderTabsList();
+  document.getElementById('backdrop-'+name)?.classList.add('open');
+  document.getElementById('sheet-'+name)?.classList.add('open');
+  // nav active
+  const map = {bookmarks:'nav-bm',games:'nav-games',tabs:'nav-tabs',downloads:'nav-dl'};
+  if(map[name]){ document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); document.getElementById(map[name])?.classList.add('active'); }
+}
+function closeSheet(name){
+  document.getElementById('backdrop-'+name)?.classList.remove('open');
+  document.getElementById('sheet-'+name)?.classList.remove('open');
+}
+
+// ── PWA ──
+let deferredPrompt = null;
+function setupPWA(){
+  window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredPrompt=e; });
+  window.addEventListener('appinstalled', ()=>{ toast('✅ IRIS NEO installed!'); deferredPrompt=null; });
+  // Manifest
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="80" fill="#1e2030"/><circle cx="256" cy="220" r="100" fill="none" stroke="#4a90e2" stroke-width="18"/><circle cx="256" cy="220" r="50" fill="#4a90e2" opacity="0.8"/><circle cx="256" cy="220" r="20" fill="#1e2030"/><text x="256" y="400" text-anchor="middle" fill="#7c5cfa" font-size="72" font-family="sans-serif" font-weight="900">NEO</text></svg>`;
+  const icons=[{src:`data:image/svg+xml,${encodeURIComponent(svg)}`,sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}];
+  const m={name:'IRIS NEO',short_name:'IRIS',start_url:'.',display:'standalone',background_color:'#1e2030',theme_color:'#1e2030',icons};
+  const b=new Blob([JSON.stringify(m)],{type:'application/json'});
+  const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(b);document.head.appendChild(l);
+  // Meta
+  const mt=document.createElement('meta');mt.name='theme-color';mt.content='#1e2030';document.head.appendChild(mt);
+  const ma=document.createElement('meta');ma.name='apple-mobile-web-app-capable';ma.content='yes';document.head.appendChild(ma);
+}
+async function installPWA(){
+  if(deferredPrompt){ deferredPrompt.prompt(); const r=await deferredPrompt.userChoice; if(r.outcome==='accepted') toast('✅ Installed!'); deferredPrompt=null; }
+  else toast('📱 Use browser menu → "Add to Home Screen"');
+}
+
+// ── VOICE ──
+let recog = null;
+function openVoice(){
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ toast('Voice requires Chrome on Android'); return; }
+  document.getElementById('v-overlay').classList.add('open');
+  document.getElementById('v-transcript').textContent='—';
+  document.getElementById('v-status').textContent='Listening... speak now';
+  recog = new SR();
+  recog.lang='en-IN'; recog.continuous=false; recog.interimResults=true;
+  recog.onstart=()=>document.getElementById('so-mic-btn').classList.add('recording');
+  recog.onresult=e=>{
+    const t=Array.from(e.results).map(r=>r[0].transcript).join('');
+    document.getElementById('v-transcript').textContent=t;
+    if(e.results[0].isFinal){
+      document.getElementById('so-input').value=t;
+      closeVoice();
+      speakResult(t);
+    }
+  };
+  recog.onerror=e=>{ document.getElementById('v-status').textContent='Error: '+e.error; };
+  recog.onend=()=>document.getElementById('so-mic-btn').classList.remove('recording');
+  recog.start();
+}
+
+// ── VOICE TTS ──
+function speakResult(text){
+  if(!window.speechSynthesis){ doSearch(); return; }
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance('Searching for ' + text);
+  utt.lang = 'en-IN';
+  utt.rate = 1.0;
+  utt.pitch = 1.0;
+  const trySpeak = ()=>{
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(v=>(v.name.includes('Google') && v.lang.startsWith('en')))||
+                      voices.find(v=>v.lang==='en-IN')||
+                      voices.find(v=>v.lang.startsWith('en'))||null;
+    if(preferred) utt.voice = preferred;
+    utt.onend = ()=>{ doSearch(); };
+    utt.onerror = ()=>{ doSearch(); };
+    window.speechSynthesis.speak(utt);
+  };
+  if(window.speechSynthesis.getVoices().length){ trySpeak(); }
+  else{ window.speechSynthesis.onvoiceschanged = trySpeak; }
+}
+function closeVoice(){ try{recog?.stop();}catch(_){} document.getElementById('so-mic-btn').classList.remove('recording'); document.getElementById('v-overlay').classList.remove('open'); }
+document.getElementById('v-overlay').addEventListener('click', e=>{ if(e.target.id==='v-overlay') closeVoice(); });
+
+// ── LOADING BAR ──
+let loadTimer;
+function showLoadingBar(){
+  const b=document.getElementById('loading-bar');
+  b.style.display='block'; b.style.transition='none'; b.style.transform='scaleX(0)';
+  clearTimeout(loadTimer);
+  requestAnimationFrame(()=>{ b.style.transition='transform 1.2s ease-out'; b.style.transform='scaleX(0.85)'; });
+}
+function hideLoadingBar(){
+  const b=document.getElementById('loading-bar');
+  b.style.transition='transform 0.3s ease'; b.style.transform='scaleX(1)';
+  loadTimer=setTimeout(()=>{ b.style.display='none'; b.style.transform='scaleX(0)'; },350);
+}
+
+// ── TOAST ──
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+// ── TIME AGO ──
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60) return 'Just now';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h ago';
+  return Math.floor(s/86400)+'d ago';
+}
+
+// ── KEYBOARD ESC ──
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){
+    closeSearch(); closeMenu(); closeEnginePicker(); closeVoice();
+    document.getElementById('save-dialog').classList.remove('open');
+    ['bookmarks','history','downloads','tabs','games','more','settings'].forEach(n=>closeSheet(n));
+  }
+});
+
+// ── START ──
+init();
+</script>
+
+<!-- ════════════════════════════════════
+     ADGUARD DNS SETUP PANEL
+════════════════════════════════════ -->
+<div class="dns-panel-overlay" id="dns-panel-overlay" onclick="maybeDnsClose(event)">
+  <div class="dns-panel">
+    <div class="dns-panel-handle"></div>
+    <div class="dns-panel-header">
+      <div class="dns-panel-title">
+        <div class="dns-panel-title-icon">🛡️</div>
+        AdGuard DNS
+      </div>
+      <button class="dns-close-btn" onclick="closeDnsPanel()">✕</button>
+    </div>
+    <div class="dns-body">
+
+      <!-- Status -->
+      <div class="dns-status-card" id="dns-status-card">
+        <div class="dns-status-dot" id="dns-status-dot"></div>
+        <div>
+          <div class="dns-status-text" id="dns-status-text">Checking...</div>
+          <div class="dns-status-sub" id="dns-status-sub">Configure below to enable</div>
+        </div>
+      </div>
+
+      <!-- DNS Addresses -->
+      <div class="dns-section-title">📡 DNS Server Addresses</div>
+      <div class="dns-addr-card">
+        <div class="dns-addr-info">
+          <div class="dns-addr-label">Primary DNS</div>
+          <div class="dns-addr-value">94.140.14.14</div>
+        </div>
+        <button class="dns-copy-btn" id="copy-dns1" onclick="copyDns('94.140.14.14','copy-dns1')">Copy</button>
+      </div>
+      <div class="dns-addr-card">
+        <div class="dns-addr-info">
+          <div class="dns-addr-label">Secondary DNS</div>
+          <div class="dns-addr-value">94.140.15.15</div>
+        </div>
+        <button class="dns-copy-btn" id="copy-dns2" onclick="copyDns('94.140.15.15','copy-dns2')">Copy</button>
+      </div>
+
+      <!-- DoH URL -->
+      <div class="dns-doh-card">
+        <div class="dns-doh-title">🔐 DNS-over-HTTPS (DoH)</div>
+        <div class="dns-doh-url">https://dns.adguard-dns.com/dns-query</div>
+      </div>
+
+      <!-- Setup Steps -->
+      <div class="dns-section-title">📋 Phone mein setup kaise karein</div>
+      <div class="dns-steps">
+        <div class="dns-step">
+          <div class="dns-step-num">1</div>
+          <div class="dns-step-text">
+            <strong>Settings</strong> → <strong>Connections</strong> → <strong>WiFi</strong> kholo
+          </div>
+        </div>
+        <div class="dns-step">
+          <div class="dns-step-num">2</div>
+          <div class="dns-step-text">
+            Connected WiFi pe <strong>long press</strong> → <strong>Manage Network Settings</strong>
+          </div>
+        </div>
+        <div class="dns-step">
+          <div class="dns-step-num">3</div>
+          <div class="dns-step-text">
+            <strong>Advanced</strong> → IP Settings → <strong>Static</strong> select karo
+          </div>
+        </div>
+        <div class="dns-step">
+          <div class="dns-step-num">4</div>
+          <div class="dns-step-text">
+            DNS 1: <strong>94.140.14.14</strong><br>
+            DNS 2: <strong>94.140.15.15</strong> enter karo → Save
+          </div>
+        </div>
+        <div class="dns-step">
+          <div class="dns-step-num">5</div>
+          <div class="dns-step-text">
+            Mobile Data ke liye: Settings → <strong>Private DNS</strong> search karo →
+            <strong>dns.adguard-dns.com</strong> enter karo
+          </div>
+        </div>
+      </div>
+
+      <!-- Enable Button -->
+      <button class="dns-main-btn" id="dns-main-btn" onclick="toggleAdGuardDns()">
+        🛡️ Enable AdGuard DNS (In-App)
+      </button>
+      <p style="font-size:11px;color:#6b6e85;text-align:center;margin-top:10px;line-height:1.6">
+        In-App toggle sirf IRIS NEO ke andar kaam karega.<br>
+        Phone-level DNS = poore phone pe ad-free experience.
+      </p>
+
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
